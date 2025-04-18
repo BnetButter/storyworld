@@ -9,12 +9,27 @@ n = 2534669  # modulus (p * q)
 e = 65537    # public exponent
 ciphertext = 587856  # some encrypted number
 
+#generating candidate primes for factors
+def get_candidates(n):
+    primes = [2, 3]
+    for i in range(5, int(math.sqrt(n)) + 1):
+        isPrime = True
+        for p in primes:
+            if i % p == 0:
+                isPrime = False
+                break;
+        if isPrime:
+            primes.append(i)
+
+    return primes
+
 # Step 1: Factor n (brute force, since it's small)
 def factor(n):
-    for i in range(2, int(math.sqrt(n)) + 1):
-        if n % i == 0:
-            return i, n // i
-        yield i, n//i
+    prime_candidates = get_candidates(n)
+    for p in prime_candidates:
+        if n % p == 0:
+            return p, n // p
+        yield p, n//p
     raise ValueError("Failed to factor n")
 
 
