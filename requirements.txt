@@ -1,0 +1,5 @@
+pycryptodome
+docopt
+Flask
+Flask-SocketIO
+pyte

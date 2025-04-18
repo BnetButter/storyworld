@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client/dist/socket.io.min.js"></script>
+    <style>
+        /* Basic styling for header and footer */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+        }
+
+        #header {
+            background-color: #2C3E50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 20px;
+        }
+
+        #footer {
+            background-color: #2C3E50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            font-size: 14px;
+        }
+
+        #terminal-container {
+            padding-top: 30px; /* space for the header */
+            padding-bottom: 40px; /* space for the footer */
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        All Systems Red Story World Project
+    </div>
+
+    <div id="terminal-container">
+        <div id="terminal"></div>
+    </div>
+
+    <div id="footer">
+        Author 1, Author 2 &copy; 2025
+    </div>
+
+    <script>
+        const socket = io.connect("/");
+        const term = new Terminal({
+            cols:160,
+            rows:40,
+            convertEol: true,
+            fontFamily: 'monospace',
+            theme: { background: '#1e1e1e' }
+        });
+        term.open(document.getElementById('terminal'));
+        
+        socket.on('terminal_output', function(data) {
+            term.write(new Uint8Array(data));
+        });
+
+        term.onData(function(input) {
+            socket.emit('terminal_input', input);
+        });
+    </script>
+</body>
+</html>
