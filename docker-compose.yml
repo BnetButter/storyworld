@@ -1,0 +1,28 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: gateway
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /etc/letsencrypt/live/storyworld.e-itheta.com/fullchain.pem:/etc/ssl/certs/selfsigned.crt
+      - /etc/letsencrypt/live/storyworld.e-itheta.com/privkey.pem:/etc/ssl/private/selfsigned.key
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - server
+    networks:
+      - storyworld-network
+
+  server:
+    build: .
+    command: python3 app.py
+    stdin_open: true
+    working_dir: /app/src
+    tty: true
+    networks:
+      - storyworld-network
+
+networks:
+  storyworld-network:
+    driver: bridge
