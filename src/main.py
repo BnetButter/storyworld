@@ -8,6 +8,7 @@ import time
 import logging
 import sys
 import world
+#from prompt_handler import open_text_prompt
 
 
 logger = logging.getLogger()
@@ -30,6 +31,61 @@ if loglevel is not None:
 from decryption_alg import factor
 
 n = 2534669
+
+def open_text_prompt(stdscr, message, right_sidebar_width):
+    """
+    Opens a text prompt in the center of the screen with a message.
+    The prompt window will be approximately the size of the right subwindow.
+    Allows the user to input text and exits when the user types 'exit'.
+    """
+    h, w = stdscr.getmaxyx()
+    prompt_height = h - 10  # Slightly smaller than the full height
+    prompt_width = right_sidebar_width - 8  # Reduce width slightly to center the box
+    prompt_y = 5  # Start a bit below the top
+    prompt_x = w - right_sidebar_width + 4  # Adjust alignment to center the box better
+
+    # Create a new window for the prompt
+    prompt_win = curses.newwin(prompt_height, prompt_width, prompt_y, prompt_x)
+    prompt_win.bkgd(' ', curses.color_pair(2))
+    prompt_win.box()
+
+    # Display the message
+    prompt_win.addstr(2, 2, message, curses.color_pair(2))
+    prompt_win.addstr(4, 2, "Type 'exit' to return...", curses.color_pair(2))
+
+    # Refresh the prompt window
+    prompt_win.refresh()
+
+    # Initialize input string
+    user_input = ""
+    while True:
+        # Display the current input
+        prompt_win.addstr(6, 2, f"Input: {user_input}", curses.color_pair(2))
+        prompt_win.clrtoeol()  # Clear the rest of the line
+        prompt_win.refresh()
+
+        # Get user input
+        key = prompt_win.getch()
+
+        # Handle backspace
+        if key in (curses.KEY_BACKSPACE, 127):
+            user_input = user_input[:-1]
+        # Handle Enter key
+        elif key in (curses.KEY_ENTER, 10, 13):
+            if user_input.lower() == "exit":
+                break
+            else:
+                user_input = ""  # Clear input if not "exit"
+        # Handle regular characters
+        elif 32 <= key <= 126:  # Printable ASCII range
+            user_input += chr(key)
+
+    # Clear the prompt window
+    prompt_win.clear()
+    prompt_win.refresh()
+
+    # Redraw the main screen to resume map navigation
+    stdscr.refresh()
 
 def draw_modal(stdscr, message):
     h, w = stdscr.getmaxyx()
@@ -99,6 +155,8 @@ def main(stdscr):
     right_sidebar.refresh()
 
     player_pos = list(start_pos)
+    
+    at_spot = False
 
     while True:
         key = stdscr.getch()
@@ -113,7 +171,18 @@ def main(stdscr):
             text = ["Cracking RSA"] + [ f"n = {a} q = {b}" for a, b in factor(n)]
             write_to_right_sidebar(text_area, text)
             world.render_world(text_area, world_base_map, player_pos)
-    
+        
+        
+        # Check if player reaches a specific position
+        if player_pos == [5, 5] and not at_spot:  # Example position
+            at_spot = True
+            open_text_prompt(stdscr, "You have discovered a hidden area!", right_width)
+
+            right_sidebar.refresh()
+            world.render_world(text_area, world_base_map, player_pos)
+            
+        elif player_pos != [5, 5] and at_spot:  # Example position
+            at_spot = False
         elif key == ord("w"):
             player_pos[0] -= 1
             world.render_world(text_area, world_base_map, player_pos)
@@ -129,6 +198,7 @@ def main(stdscr):
         elif key == ord("d"):
             player_pos[1] += 1
             world.render_world(text_area, world_base_map, player_pos)
+
 
 
         stdscr.refresh()
