@@ -8,6 +8,7 @@ import time
 import logging
 import sys
 import world
+import string
 #from prompt_handler import open_text_prompt
 
 
@@ -130,6 +131,35 @@ def write_to_right_sidebar(right_sidebar, text: list[str]):
 
     right_sidebar.refresh()
 
+def update_scrolling_text(scrolling_win, text_lines):
+    """
+    Updates the scrolling text in the subwindow.
+    """
+    scrolling_win.clear()
+    scrolling_win.box()  # Redraw the border after clearing
+    max_y, max_x = scrolling_win.getmaxyx()
+    line_height = max_y - 2  # Account for the box frame
+
+    # Add lines one by one, starting from the second row (index 1)
+    for i, line in enumerate(text_lines):
+        if i >= line_height:
+            scrolling_win.scroll(1)  # Scroll up one line
+        scrolling_win.addstr((i % line_height) + 1, 1, line[:max_x - 2])  # Wrap text inside the subwindow width
+        scrolling_win.refresh()
+
+def generate_random_ascii(length):
+    """
+    Generates a random string of ASCII characters of the specified length.
+
+    Args:
+        length (int): The length of the random string to generate.
+
+    Returns:
+        str: A random string of ASCII characters.
+    """
+    ascii_characters = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choice(ascii_characters) for _ in range(length))
+
 world_base_map, start_pos = world.generate_map()
 
 
@@ -155,8 +185,14 @@ def main(stdscr):
     left_sidebar.bkgd(' ', curses.color_pair(1))
     right_sidebar.bkgd(' ', curses.color_pair(1))
 
-    text_area = right_sidebar.derwin(h-2, right_width-2, 1, 1)
-    
+    text_area = right_sidebar.derwin(h - 2, right_width - 2, 1, 1)
+
+    # Create a small subwindow at the bottom of the left column
+    scrolling_height = h // 6  # Make it 1/6th of the screen height
+    scrolling_win = left_sidebar.derwin(scrolling_height, left_width - 2, h - scrolling_height - 1, 1)
+    scrolling_win.bkgd(' ', curses.color_pair(1))
+    scrolling_win.box()
+
     left_sidebar.box()
     right_sidebar.box()
     left_sidebar.addstr(2, 2, "[ Hack Governor Module ] (ENTER)", curses.color_pair(1))
@@ -164,12 +200,15 @@ def main(stdscr):
     right_sidebar.refresh()
 
     player_pos = list(start_pos)
-    
     at_spot = False
 
-    # world_base_map is not here, but it is an 2d numpy array. if 
+    # Example scrolling text
+    #random_text = ["Initializing...", "Connecting to server...", "Decrypting data...", "Idle..."]
 
+    # Main game loop
     while True:
+        random_text = [generate_random_ascii(36) for _ in range(4)]
+        current_text = random_text
         key = stdscr.getch()
         if key == ord('q'):
             break
@@ -218,7 +257,25 @@ def main(stdscr):
                 player_pos = new_pos
                 world.render_world(text_area, world_base_map, player_pos)
 
+        # Trigger an in-game event to update the scrolling text
+        page_trigger = False
+        if key == ord('e'):  # Example event trigger
+            journal_num = 0
+            page_trigger = True
+            #current_text = 
+            update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
+            time.sleep(1)
 
+        # Restore random scrolling text after event
+        elif key == ord('r'):  # Example reset trigger
+            current_text = random_text
+            update_scrolling_text(scrolling_win, current_text)
+
+        if not page_trigger:
+            # Update scrolling text periodically
+            print(f"Navigating: x-{player_pos[0]} y-{player_pos[1]}")
+            update_scrolling_text(scrolling_win, [f"Navigating: x={player_pos[0]} y={player_pos[1]}"])#current_text)
+        page_trigger = False
 
         stdscr.refresh()
         left_sidebar.refresh()
