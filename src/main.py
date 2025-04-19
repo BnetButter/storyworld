@@ -1,6 +1,32 @@
+"""
+Usage: python3 main.py
+"""
+
 import curses
 import random
 import time
+import logging
+import sys
+import world
+
+
+logger = logging.getLogger()
+loglevel = None if len(sys.argv) == 1 else sys.argv[1]
+if loglevel is not None:
+    if loglevel == "DEBUG":
+        logger.setLevel(logging.DEBUG)  # Set the logging level
+    elif loglevel == "INFO":
+        logger.setLevel(logging.INFO)
+    elif loglevel == "WARNING":
+        logger.setLevel(logging.WARNING)
+    elif loglevel == "ERROR":
+        logger.setLevel(logging.ERROR)
+    
+    # Create a file handler to write logs to a file
+    file_handler = logging.FileHandler("app.log")
+    file_handler.setLevel(logging.NOTSET)
+    logger.addHandler(file_handler)
+
 from decryption_alg import factor
 
 n = 2534669
@@ -23,8 +49,8 @@ def draw_modal(stdscr, message):
 
 def write_to_right_sidebar(right_sidebar, text: list[str]):
     right_sidebar.clear()
-
     max_y, max_x = right_sidebar.getmaxyx()  # Get dimensions of the sidebar window
+    logger.info(f"sizeof right side bar: {max_y}, {max_x}")
     right_sidebar.scrollok(True)  # Enable scrolling
 
     line_height = max_y - 2  # Account for the box frame
@@ -39,7 +65,12 @@ def write_to_right_sidebar(right_sidebar, text: list[str]):
 
     right_sidebar.refresh()
 
+world_base_map, start_pos = world.generate_map()
+
+
 def main(stdscr):
+    logger.debug("-- MAIN START -- ")
+
     curses.curs_set(0)
     curses.start_color()
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
@@ -67,6 +98,8 @@ def main(stdscr):
     left_sidebar.refresh()
     right_sidebar.refresh()
 
+    player_pos = list(start_pos)
+
     while True:
         key = stdscr.getch()
         if key == ord('q'):
@@ -74,10 +107,29 @@ def main(stdscr):
         elif key == ord('m'):
             draw_modal(stdscr, "This is a modal dialog!")
         elif key == ord('\n') or key == 10:
+            logging.debug(f"Pressed Enter")
             # Simulate random number printout to right sidebar
             random_data = ''.join([str(random.randint(0, 9)) for _ in range(32)])
             text = ["Cracking RSA"] + [ f"n = {a} q = {b}" for a, b in factor(n)]
             write_to_right_sidebar(text_area, text)
+            world.render_world(text_area, world_base_map, player_pos)
+    
+        elif key == ord("w"):
+            player_pos[0] -= 1
+            world.render_world(text_area, world_base_map, player_pos)
+
+        elif key == ord("s"):
+            player_pos[0] += 1
+            world.render_world(text_area, world_base_map, player_pos)
+
+        elif key == ord("a"):
+            player_pos[1] -= 1
+            world.render_world(text_area, world_base_map, player_pos)
+        
+        elif key == ord("d"):
+            player_pos[1] += 1
+            world.render_world(text_area, world_base_map, player_pos)
+
 
         stdscr.refresh()
         left_sidebar.refresh()

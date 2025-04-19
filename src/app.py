@@ -6,6 +6,8 @@ import time
 import struct
 import fcntl
 import termios
+import sys
+
 
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
@@ -16,6 +18,11 @@ socketio = SocketIO(app)
 # Store PTY sessions: sid -> {'fd': int, 'pid': int}
 clients = {}
 
+if len(sys.argv) == 1:
+    loginfo = []
+elif len(sys.argv) == 2:
+    loginfo = sys.argv[1:]
+
 def set_pty_size(fd, rows, cols):
     size = struct.pack("HHHH", rows, cols, 0, 0)
     fcntl.ioctl(fd, termios.TIOCSWINSZ, size)
@@ -24,7 +31,7 @@ def run_curses_app(sid):
     pid, fd = pty.fork()
     if pid == 0:
         time.sleep(1)
-        os.execvp("python3", ["python3", "main.py"])
+        os.execvp("python3", ["python3", "main.py"] + loginfo)
     else:
         set_pty_size(fd, 40, 160)
         clients[sid] = {'fd': fd, 'pid': pid}
