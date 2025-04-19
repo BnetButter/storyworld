@@ -59,7 +59,8 @@ def render_world(curses_win: curses.window, game_map: List[List[str]], player_po
     # Draw the player at their relative position
     player_screen_y = prow - view_row
     player_screen_x = pcol - view_col
-    curses_win.addch(player_screen_y, player_screen_x, '@')
+    curses_win.addch(player_screen_y-1 if player_screen_y - 1 >= 0 else 0, player_screen_x, '@')
+    curses_win.addch(player_screen_y, player_screen_x, 'λ')
 
     # Refresh the window
     curses_win.refresh()
@@ -127,8 +128,8 @@ def find_start_coordinate(grid: np.ndarray):
     return row_index, col_index
 
 def generate_map():
-    width = 512  # Width of the grid
-    height = 256  # Height of the grid
+    width = 256  # Width of the grid
+    height = 128  # Height of the grid
     scale = 50.0
     threshold = 0.4  # Threshold for determining if noise value becomes an obstacle
     octaves = 2
@@ -137,6 +138,6 @@ def generate_map():
     grid = generate_grid(width, height, scale, threshold, octaves, persistence, lacunarity)
     
     while True:
-        y, x = random.randint(32, 200), random.randint(100, 400)
+        y, x = random.randint(32, 96), random.randint(50, 200)
         if grid[y][x] == 1:
             return grid, (y, x)
