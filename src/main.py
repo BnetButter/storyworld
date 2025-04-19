@@ -184,9 +184,9 @@ def main(stdscr):
             world.render_world(text_area, world_base_map, player_pos)
         
         
+
         # Check if player reaches a specific position
-        if player_pos == [5, 5] and not at_spot:  # Example position
-            at_spot = True
+        if key == ord("p"):  # Example position
             open_text_prompt(stdscr, "You have discovered a hidden area!", right_width)
 
             right_sidebar.refresh()
