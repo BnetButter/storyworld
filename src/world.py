@@ -60,6 +60,7 @@ def render_world(curses_win: curses.window, game_map: List[List[str]], player_po
     player_screen_y = prow - view_row
     player_screen_x = pcol - view_col
     curses_win.addch(player_screen_y-1 if player_screen_y - 1 >= 0 else 0, player_screen_x, '@')
+    curses_win.addch(player_screen_y, player_screen_x, 'λ')
 
     # Refresh the window
     curses_win.refresh()
