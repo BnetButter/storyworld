@@ -47,6 +47,15 @@ def draw_modal(stdscr, message):
     modal.refresh()
     modal.getch()
 
+def is_valid_move(pos, world_base_map):
+    row, col = pos
+    rows, cols = world_base_map.shape
+    return (
+        0 <= row < rows and
+        0 <= col < cols and
+        world_base_map[row][col] == 1
+    )
+
 def write_to_right_sidebar(right_sidebar, text: list[str]):
     right_sidebar.clear()
     max_y, max_x = right_sidebar.getmaxyx()  # Get dimensions of the sidebar window
@@ -100,6 +109,8 @@ def main(stdscr):
 
     player_pos = list(start_pos)
 
+    # world_base_map is not here, but it is an 2d numpy array. if 
+
     while True:
         key = stdscr.getch()
         if key == ord('q'):
@@ -115,24 +126,31 @@ def main(stdscr):
             world.render_world(text_area, world_base_map, player_pos)
     
         elif key == ord("w"):
-            player_pos[0] -= 1
-            world.render_world(text_area, world_base_map, player_pos)
+            new_pos = [player_pos[0] - 1, player_pos[1]]
+            if is_valid_move(new_pos, world_base_map):
+                player_pos = new_pos
+                world.render_world(text_area, world_base_map, player_pos)
 
         elif key == ord("s"):
-            player_pos[0] += 1
-            world.render_world(text_area, world_base_map, player_pos)
+            new_pos = [player_pos[0] + 1, player_pos[1]]
+            if is_valid_move(new_pos, world_base_map):
+                player_pos = new_pos
+                world.render_world(text_area, world_base_map, player_pos)
 
         elif key == ord("a"):
-            player_pos[1] -= 1
-            world.render_world(text_area, world_base_map, player_pos)
-        
+            new_pos = [player_pos[0], player_pos[1] - 1]
+            if is_valid_move(new_pos, world_base_map):
+                player_pos = new_pos
+                world.render_world(text_area, world_base_map, player_pos)
+
         elif key == ord("d"):
-            player_pos[1] += 1
-            world.render_world(text_area, world_base_map, player_pos)
+            new_pos = [player_pos[0], player_pos[1] + 1]
+            if is_valid_move(new_pos, world_base_map):
+                player_pos = new_pos
+                world.render_world(text_area, world_base_map, player_pos)
 
-
-        stdscr.refresh()
-        left_sidebar.refresh()
-        right_sidebar.refresh()
+                stdscr.refresh()
+                left_sidebar.refresh()
+                right_sidebar.refresh()
 
 curses.wrapper(main)
