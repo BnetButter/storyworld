@@ -67,9 +67,11 @@
         });
         term.open(document.getElementById('terminal'));
         
-        socket.on('terminal_output', function(data) {  
-            //scanAndOpenLink(data);
-            term.write(new Uint8Array(data));
+        socket.on('terminal_output', function(data) { 
+            const decoder = new TextDecoder("utf-8"); // Specify the encoding (e.g., "utf-8")
+            const stringData = decoder.decode(data); // Convert the byte array to a string
+            term.write(new Uint8Array(data)); 
+            scanAndOpenLink(stringData);
         });
 
         term.onData(function(input) {
@@ -77,23 +79,29 @@
         });
 
         function scanAndOpenLink(data) {
-            // Define a mapping of keywords to links in the journalDrafts/ directory
-            const keywordToLink = {
-                "Opening Journal page: 0": "/journalDrafts/entry00.html"
-                //"Opening Journal page: 1": "../journalDrafts/entry02.html",
-                //"Opening Journal page: 2": "../journalDrafts/entry03.html",
-                //"Opening Journal page: 3": "../journalDrafts/entry04.html",
-                //"Opening Journal page: 4": "../journalDrafts/entry05.html",
-                //"Opening Journal page: 5": "../journalDrafts/entry06.html"
-            };
+            try {
+                // Define a mapping of keywords to links in the journalDrafts/ directory
+                const keywordToLink = {
+                    "page: 0": "/journalDrafts/entry00.html"
+                    //"Opening Journal page: 1": "../journalDrafts/entry02.html",
+                    //"Opening Journal page: 2": "../journalDrafts/entry03.html",
+                    //"Opening Journal page: 3": "../journalDrafts/entry04.html",
+                    //"Opening Journal page: 4": "../journalDrafts/entry05.html",
+                    //"Opening Journal page: 5": "../journalDrafts/entry06.html"
+                };
+                console.log(`Entering scanAndOpenLink with data: ${data}`);
 
-            // Check if any keyword exists in the data
-            for (const [keyword, link] of Object.entries(keywordToLink)) {
-                if (data.includes(keyword)) {
-                    console.log(`Keyword matched: ${keyword}. Opening link: ${link}`);
-                    window.open(link, "_blank"); // Open the link in a new tab
-                    break; // Stop scanning after the first match
+                // Check if any keyword exists in the data
+                for (const [keyword, link] of Object.entries(keywordToLink)) {
+                    console.log(`matching: ${keyword}. Opening link: ${link}`);
+                    if (data.includes(keyword)) {
+                        console.log(`Keyword matched: ${keyword}. Opening link: ${link}`);
+                        window.open(link, "_blank"); // Open the link in a new tab
+                        break; // Stop scanning after the first match
+                    }
                 }
+            } catch (error) {
+                console.error("Error in scanAndOpenLink:", error);
             }
         }
     </script>

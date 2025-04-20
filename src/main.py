@@ -264,7 +264,6 @@ def main(stdscr):
             page_trigger = True
             #current_text = 
             update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
-            time.sleep(1)
 
         # Restore random scrolling text after event
         elif key == ord('r'):  # Example reset trigger

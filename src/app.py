@@ -80,5 +80,9 @@ def index():
 def serve_journal_entries(filename):
     return send_from_directory('journalDrafts', filename)"""
 
+@app.route('/journalDrafts/<path:filename>')
+def serve_journal_entries(filename):
+    return send_from_directory('journalDrafts', filename)
+
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000)
