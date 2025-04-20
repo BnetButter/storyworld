@@ -259,8 +259,38 @@ def main(stdscr):
 
         # Trigger an in-game event to update the scrolling text
         page_trigger = False
-        if key == ord('e'):  # Example event trigger
+        if key == ord('1'):  # Example event trigger
             journal_num = 0
+            page_trigger = True
+            #current_text = 
+            update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
+        page_trigger = False
+        if key == ord('2'):  # Example event trigger
+            journal_num = 1
+            page_trigger = True
+            #current_text = 
+            update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
+        page_trigger = False
+        if key == ord('3'):  # Example event trigger
+            journal_num = 2
+            page_trigger = True
+            #current_text = 
+            update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
+        page_trigger = False
+        if key == ord('4'):  # Example event trigger
+            journal_num = 3
+            page_trigger = True
+            #current_text = 
+            update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
+        page_trigger = False
+        if key == ord('5'):  # Example event trigger
+            journal_num = 4
+            page_trigger = True
+            #current_text = 
+            update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
+        page_trigger = False
+        if key == ord('6'):  # Example event trigger
+            journal_num = 5
             page_trigger = True
             #current_text = 
             update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
