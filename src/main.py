@@ -8,6 +8,8 @@ import time
 import logging
 import sys
 import world
+import textwrap
+import dungeonmaster
 import string
 #from prompt_handler import open_text_prompt
 
@@ -33,7 +35,7 @@ from decryption_alg import factor
 
 n = 2534669
 
-def open_text_prompt(stdscr, message, right_sidebar_width):
+def open_item_prompt(stdscr, item, right_sidebar_width):
     """
     Opens a text prompt in the center of the screen with a message.
     The prompt window will be approximately the size of the right subwindow.
@@ -51,8 +53,59 @@ def open_text_prompt(stdscr, message, right_sidebar_width):
     prompt_win.box()
 
     # Display the message
-    prompt_win.addstr(2, 2, message, curses.color_pair(2))
-    prompt_win.addstr(4, 2, "Type 'exit' to return...", curses.color_pair(2))
+
+    name = item["item_name"]
+    text = gs.get_item_description(item)
+
+    # Get available width for wrapping
+    max_width = w - 4  # Leave some padding from the edges
+
+    # Wrap the text
+    wrapped_lines = textwrap.wrap(text, width=80)
+
+    # Add the name
+    prompt_win.addstr(2, 2, name, curses.color_pair(2))
+
+    # Add wrapped lines starting from line 4
+    for i, line in enumerate(wrapped_lines[:prompt_height - 4]):
+        prompt_win.addstr(4 + i, 2, line, curses.color_pair(2))
+
+    # Refresh the prompt window
+    prompt_win.refresh()
+
+    while True:
+        n = stdscr.getch()
+        if n == ord("q"):
+            return
+        
+
+ 
+    
+def open_text_prompt(stdscr, item, right_sidebar_width):
+    """
+    Opens a text prompt in the center of the screen with a message.
+    The prompt window will be approximately the size of the right subwindow.
+    Allows the user to input text and exits when the user types 'exit'.
+    """
+    h, w = stdscr.getmaxyx()
+    prompt_height = h - 10  # Slightly smaller than the full height
+    prompt_width = right_sidebar_width - 8  # Reduce width slightly to center the box
+    prompt_y = 4  # Start a bit below the top
+    prompt_x = w - right_sidebar_width + 4  # Adjust alignment to center the box better
+
+    # Create a new window for the prompt
+    prompt_win = curses.newwin(prompt_height, prompt_width, prompt_y, prompt_x)
+    prompt_win.bkgd(' ', curses.color_pair(2))
+    prompt_win.box()
+
+    # Display the message
+    prompt_win.addstr(2, 2, item['item_name'], curses.color_pair(2))
+
+    text = gs.get_item_description(item)
+    logger.debug(text)
+    prompt_win.addstr(2, 2, text, curses.color_pair(2))
+
+    prompt_win.addstr(4, 2, "Type 'q' to return...", curses.color_pair(2))
 
     # Refresh the prompt window
     prompt_win.refresh()
@@ -88,18 +141,26 @@ def open_text_prompt(stdscr, message, right_sidebar_width):
     # Redraw the main screen to resume map navigation
     stdscr.refresh()
 
+
 def draw_modal(stdscr, message):
     h, w = stdscr.getmaxyx()
-    modal_height, modal_width = 7, 40
+    modal_height, modal_width = h - 10, w - 10
     modal_y = (h - modal_height) // 2
-    modal_x = (w - modal_width)  // 2
+    modal_x = (w - modal_width) // 2
 
-    modal = curses.newwin(modal_height, modal_width, modal_y, modal_x)
-    modal.bkgd(' ', curses.color_pair(2))
-    modal.box()
+    modal = stdscr.derwin(modal_height, modal_width, modal_y, modal_x)
+    modal.bkgd(' ', curses.color_pair(2))  # background color for modal
+    modal.box()  # draw border
 
-    modal.addstr(2, (modal_width - len(message)) // 2, message, curses.color_pair(2))
-    modal.addstr(4, (modal_width - 20) // 2, "Press any key to close", curses.color_pair(2))
+    # Wrap the message text to fit within the modal width
+    wrapped_message = textwrap.wrap(message, width=modal_width - 4)
+
+    # Add each line of wrapped message to the modal
+    for i, line in enumerate(wrapped_message):
+        modal.addstr(2 + i, (modal_width - len(line)) // 2, line, curses.color_pair(2))
+
+    # Add "Press any key to close" message at the bottom
+    modal.addstr(modal_height - 2, (modal_width - 20) // 2, "Press any key to close", curses.color_pair(2))
 
     modal.refresh()
     modal.getch()
@@ -114,6 +175,8 @@ def is_valid_move(pos, world_base_map):
     )
 
 def write_to_right_sidebar(right_sidebar, text: list[str]):
+    gs = dungeonmaster.GlobalGameState()
+
     right_sidebar.clear()
     max_y, max_x = right_sidebar.getmaxyx()  # Get dimensions of the sidebar window
     logger.info(f"sizeof right side bar: {max_y}, {max_x}")
@@ -121,13 +184,17 @@ def write_to_right_sidebar(right_sidebar, text: list[str]):
 
     line_height = max_y - 2  # Account for the box frame
     
+    i = 0
+
     # Add lines one by one with a delay
-    for i, line in enumerate(text):
+    while not gs.state_initialized():
         if i >= line_height:
             right_sidebar.scroll(1)  # Scroll up one line
         time.sleep(0.10)
-        right_sidebar.addstr(i % line_height, 0, line[:max_x - 4])  # Wrap text inside the sidebar width
+        right_sidebar.addstr(i % line_height, 0, "Generating Unique Scenario - Hopefully it won't timeout error out because ChatGPT is finicky")  # Wrap text inside the sidebar width
         right_sidebar.refresh()
+        i += 1
+
 
     right_sidebar.refresh()
 
@@ -160,16 +227,24 @@ def generate_random_ascii(length):
     ascii_characters = string.ascii_letters + string.digits + string.punctuation
     return ''.join(random.choice(ascii_characters) for _ in range(length))
 
+
+def draw_left_box(left_sidebar):
+    left_sidebar.box()
+    left_sidebar.addstr(2, 2, "[ Hack Governor Module ] (ENTER)", curses.color_pair(1))
+    left_sidebar.refresh()
+
 world_base_map, start_pos = world.generate_map()
+gs = dungeonmaster.GlobalGameState(start_pos, world_base_map)
 
 
 def main(stdscr):
     logger.debug("-- MAIN START -- ")
-
     curses.curs_set(0)
     curses.start_color()
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
+    curses.init_pair(4, curses.COLOR_RED, curses.COLOR_BLACK)
 
     stdscr.bkgd(' ', curses.color_pair(1))
     stdscr.clear()
@@ -199,7 +274,7 @@ def main(stdscr):
     left_sidebar.refresh()
     right_sidebar.refresh()
 
-    player_pos = list(start_pos)
+    
     at_spot = False
 
     # Example scrolling text
@@ -207,55 +282,65 @@ def main(stdscr):
 
     # Main game loop
     while True:
+
+        player_pos = gs.player_pos
         random_text = [generate_random_ascii(36) for _ in range(4)]
         current_text = random_text
         key = stdscr.getch()
         if key == ord('q'):
             break
-        elif key == ord('m'):
-            draw_modal(stdscr, "This is a modal dialog!")
+        
         elif key == ord('\n') or key == 10:
             logging.debug(f"Pressed Enter")
             # Simulate random number printout to right sidebar
             random_data = ''.join([str(random.randint(0, 9)) for _ in range(32)])
             text = ["Cracking RSA"] + [ f"n = {a} q = {b}" for a, b in factor(n)]
             write_to_right_sidebar(text_area, text)
-            world.render_world(text_area, world_base_map, player_pos)
-        
-        
+            logger.debug(f"{gs.location_index}")
+            scenario = gs.init_state["scenario"]["scenario"]
+            right_sidebar.clear()
+            draw_modal(right_sidebar, scenario)
+            draw_left_box(left_sidebar)
+            right_sidebar.box()
+            world.render_world(text_area, world_base_map)
 
+        
         # Check if player reaches a specific position
         if key == ord("p"):  # Example position
-            open_text_prompt(stdscr, "You have discovered a hidden area!", right_width)
-
-            right_sidebar.refresh()
-            world.render_world(text_area, world_base_map, player_pos)
+            item = gs.get_item_near_me(*player_pos)
+            if item is not None:
+                if item["type"] == "item":
+                    open_item_prompt(stdscr, item, right_width)
+                elif item["type"] == "npc":
+                    open_text_prompt(stdscr, item, right_width)
+                world.render_world(text_area, world_base_map)
+                right_sidebar.refresh()
             
         elif player_pos != [5, 5] and at_spot:  # Example position
             at_spot = False
         elif key == ord("w"):
             new_pos = [player_pos[0] - 1, player_pos[1]]
             if is_valid_move(new_pos, world_base_map):
-                player_pos = new_pos
-                world.render_world(text_area, world_base_map, player_pos)
+                gs.player_pos = new_pos
+                world.render_world(text_area, world_base_map)
 
         elif key == ord("s"):
             new_pos = [player_pos[0] + 1, player_pos[1]]
             if is_valid_move(new_pos, world_base_map):
-                player_pos = new_pos
-                world.render_world(text_area, world_base_map, player_pos)
+                gs.player_pos = new_pos
+                world.render_world(text_area, world_base_map)
 
         elif key == ord("a"):
             new_pos = [player_pos[0], player_pos[1] - 1]
             if is_valid_move(new_pos, world_base_map):
-                player_pos = new_pos
-                world.render_world(text_area, world_base_map, player_pos)
+                gs.player_pos = new_pos
+                world.render_world(text_area, world_base_map)
 
         elif key == ord("d"):
             new_pos = [player_pos[0], player_pos[1] + 1]
             if is_valid_move(new_pos, world_base_map):
-                player_pos = new_pos
-                world.render_world(text_area, world_base_map, player_pos)
+                gs.player_pos = new_pos
+                world.render_world(text_area, world_base_map)
 
         # Trigger an in-game event to update the scrolling text
         page_trigger = False
