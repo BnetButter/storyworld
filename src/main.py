@@ -135,7 +135,7 @@ def update_scrolling_text(scrolling_win, text_lines):
     """
     Updates the scrolling text in the subwindow.
     """
-    scrolling_win.clear()
+    #scrolling_win.clear()
     scrolling_win.box()  # Redraw the border after clearing
     max_y, max_x = scrolling_win.getmaxyx()
     line_height = max_y - 2  # Account for the box frame
@@ -272,7 +272,6 @@ def main(stdscr):
 
         if not page_trigger:
             # Update scrolling text periodically
-            print(f"Navigating: x-{player_pos[0]} y-{player_pos[1]}")
             update_scrolling_text(scrolling_win, [f"Navigating: x={player_pos[0]} y={player_pos[1]}"])#current_text)
         page_trigger = False
 
