@@ -45,22 +45,20 @@ def init_game_state() -> dict:
     try:
         # Make the API call to OpenAI with the system prompt
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # Specify the model you're using
+            model="o3-mini",  # Specify the model you're using
             messages=[
-                {"role": "user", "content": SYSTEM_PROMPT}
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": "generate the initial world state in JSON according to the specified format"}
             ],
-            temperature=0.5,
-            max_tokens=4096  # Adjust this value as needed
+            timeout=20.0  # Set timeout in seconds
         )
 
         # Parse the response and extract the JSON output
         game_state = json.loads(response.choices[0].message.content.strip())
-
         return game_state
 
     except Exception as e:
-        print(f"Error initializing game state: {e}")
-        return {}
+        return TEST_RESPONSE
 
 
 class GlobalGameState:
@@ -159,7 +157,7 @@ Through serendipity he ended up on the same planet where the story of Murderbot 
 in raw JSON format, generate character names in the following schema {
     "name": character
     "backstory": backstory
-    "ascii_symbol": an ascii symbol to be rendered. should be vaguely circular 
+    "ascii_symbol": an ascii symbol to be rendered. must be a single char
 }
 
 backstory will not be visible to the user, but will be used during prompt.
@@ -171,7 +169,7 @@ the item description will be like so
 {
     "item_name": "name"
     "item_description": item_description
-    "ascii_symbol": an ascii symbol to be rendered on the terminal. should be unique 
+    "ascii_symbol": an ascii symbol to be rendered on the terminal. should be unique. single char
 }
 
 
