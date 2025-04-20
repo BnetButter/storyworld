@@ -9,7 +9,7 @@ import termios
 import sys
 
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
@@ -74,6 +74,11 @@ def handle_terminal_input(data):
 @app.route('/')
 def index():
     return render_template('index.html')
+"""
+# Serve files from the journalEntries directory
+@app.route('/journalDrafts/<path:filename>')
+def serve_journal_entries(filename):
+    return send_from_directory('journalDrafts', filename)"""
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000)

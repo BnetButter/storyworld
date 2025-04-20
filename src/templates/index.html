@@ -67,13 +67,35 @@
         });
         term.open(document.getElementById('terminal'));
         
-        socket.on('terminal_output', function(data) {
+        socket.on('terminal_output', function(data) {  
+            //scanAndOpenLink(data);
             term.write(new Uint8Array(data));
         });
 
         term.onData(function(input) {
             socket.emit('terminal_input', input);
         });
+
+        function scanAndOpenLink(data) {
+            // Define a mapping of keywords to links in the journalDrafts/ directory
+            const keywordToLink = {
+                "Opening Journal page: 0": "/journalDrafts/entry00.html"
+                //"Opening Journal page: 1": "../journalDrafts/entry02.html",
+                //"Opening Journal page: 2": "../journalDrafts/entry03.html",
+                //"Opening Journal page: 3": "../journalDrafts/entry04.html",
+                //"Opening Journal page: 4": "../journalDrafts/entry05.html",
+                //"Opening Journal page: 5": "../journalDrafts/entry06.html"
+            };
+
+            // Check if any keyword exists in the data
+            for (const [keyword, link] of Object.entries(keywordToLink)) {
+                if (data.includes(keyword)) {
+                    console.log(`Keyword matched: ${keyword}. Opening link: ${link}`);
+                    window.open(link, "_blank"); // Open the link in a new tab
+                    break; // Stop scanning after the first match
+                }
+            }
+        }
     </script>
 </body>
 </html>
