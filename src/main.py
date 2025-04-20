@@ -8,6 +8,7 @@ import time
 import logging
 import sys
 import world
+import textwrap
 import dungeonmaster
 #from prompt_handler import open_text_prompt
 
@@ -33,7 +34,7 @@ from decryption_alg import factor
 
 n = 2534669
 
-def open_text_prompt(stdscr, message, right_sidebar_width):
+def open_item_prompt(stdscr, item, right_sidebar_width):
     """
     Opens a text prompt in the center of the screen with a message.
     The prompt window will be approximately the size of the right subwindow.
@@ -51,8 +52,59 @@ def open_text_prompt(stdscr, message, right_sidebar_width):
     prompt_win.box()
 
     # Display the message
-    prompt_win.addstr(2, 2, message, curses.color_pair(2))
-    prompt_win.addstr(4, 2, "Type 'exit' to return...", curses.color_pair(2))
+
+    name = item["item_name"]
+    text = gs.get_item_description(item)
+
+    # Get available width for wrapping
+    max_width = w - 4  # Leave some padding from the edges
+
+    # Wrap the text
+    wrapped_lines = textwrap.wrap(text, width=80)
+
+    # Add the name
+    prompt_win.addstr(2, 2, name, curses.color_pair(2))
+
+    # Add wrapped lines starting from line 4
+    for i, line in enumerate(wrapped_lines[:prompt_height - 4]):
+        prompt_win.addstr(4 + i, 2, line, curses.color_pair(2))
+
+    # Refresh the prompt window
+    prompt_win.refresh()
+
+    while True:
+        n = stdscr.getch()
+        if n == ord("q"):
+            return
+        
+
+ 
+    
+def open_text_prompt(stdscr, item, right_sidebar_width):
+    """
+    Opens a text prompt in the center of the screen with a message.
+    The prompt window will be approximately the size of the right subwindow.
+    Allows the user to input text and exits when the user types 'exit'.
+    """
+    h, w = stdscr.getmaxyx()
+    prompt_height = h - 10  # Slightly smaller than the full height
+    prompt_width = right_sidebar_width - 8  # Reduce width slightly to center the box
+    prompt_y = 4  # Start a bit below the top
+    prompt_x = w - right_sidebar_width + 4  # Adjust alignment to center the box better
+
+    # Create a new window for the prompt
+    prompt_win = curses.newwin(prompt_height, prompt_width, prompt_y, prompt_x)
+    prompt_win.bkgd(' ', curses.color_pair(2))
+    prompt_win.box()
+
+    # Display the message
+    prompt_win.addstr(2, 2, item['item_name'], curses.color_pair(2))
+
+    text = gs.get_item_description(item)
+    logger.debug(text)
+    prompt_win.addstr(2, 2, text, curses.color_pair(2))
+
+    prompt_win.addstr(4, 2, "Type 'q' to return...", curses.color_pair(2))
 
     # Refresh the prompt window
     prompt_win.refresh()
@@ -198,9 +250,13 @@ def main(stdscr):
         if key == ord("p"):  # Example position
             item = gs.get_item_near_me(*player_pos)
             if item is not None:
-                open_text_prompt(stdscr, "item", right_width)
-                right_sidebar.refresh()
+                if item["type"] == "item":
+                    open_item_prompt(stdscr, item, right_width)
+                elif item["type"] == "npc":
+                    open_text_prompt(stdscr, item, right_width)
+                
                 world.render_world(text_area, world_base_map)
+                right_sidebar.refresh()
             
         elif player_pos != [5, 5] and at_spot:  # Example position
             at_spot = False

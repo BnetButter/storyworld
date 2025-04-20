@@ -45,7 +45,7 @@ def init_game_state() -> dict:
     try:
         # Make the API call to OpenAI with the system prompt
         response = client.chat.completions.create(
-            model="gpt-4",  # Specify the model you're using
+            model="gpt-3.5-turbo",  # Specify the model you're using
             messages=[
                 {"role": "user", "content": SYSTEM_PROMPT}
             ],
@@ -104,6 +104,30 @@ class GlobalGameState:
 
             self.init_state = game_state
         threading.Thread(target=init).start()
+
+    def get_item_description(self, item):
+        if "detailed_description" in item:
+            return item["detailed_description"]
+        
+        try:
+            # Make the API call to OpenAI with the system prompt
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",  # Specify the model you're using
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT + f"{self.init_state}"},
+                    {"role": "user", "content": f"generate detailed item description for {item['item_name']} in 100 words. Just give the item description as text, not JSON"}
+                ],
+                temperature=0.7,
+                max_tokens=1024  # Adjust this value as needed
+            )
+
+            # Parse the response and extract the JSON output
+            item["detailed_description"] = response.choices[0].message.content.strip()
+            return item["detailed_description"]
+        except Exception as e:
+            print(f"Error initializing game state: {e}")
+            return {}
+
 
 
     def get_item_near_me(self, y, x) -> dict | None:
