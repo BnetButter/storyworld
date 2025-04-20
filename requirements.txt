@@ -5,3 +5,4 @@ Flask-SocketIO
 pyte
 noise==1.2.0
 numpy
+openai

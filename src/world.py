@@ -2,12 +2,17 @@ import curses
 from typing import List, Tuple
 import pathlib
 import random
-
+import dungeonmaster
 import numpy as np
 from noise import snoise2
+import logging
+import time
 
+logger = logging.getLogger()
 
-def render_world(curses_win: curses.window, game_map: List[List[str]], player_pos: Tuple[int, int]) -> None:
+def render_world(curses_win: curses.window, game_map: List[List[str]]) -> None:
+    gs = dungeonmaster.GlobalGameState()
+    player_pos = gs.player_pos
     max_rows = len(game_map)
     max_cols = len(game_map[0])
     
@@ -40,22 +45,51 @@ def render_world(curses_win: curses.window, game_map: List[List[str]], player_po
     view_row = max(0, min(view_row, max_rows - height))
     view_col = max(0, min(view_col, max_cols - width))
 
+
     # Clear the window before drawing
     curses_win.erase()
-
+    donot_update_set = set()
     # Draw the portion of the map in the current view
     for y in range(height):
         for x in range(width):
+            if (y, x) in donot_update_set:
+                continue
             map_y = view_row + y
             map_x = view_col + x
             if 0 <= map_y < max_rows and 0 <= map_x < max_cols:
                 num = game_map[map_y][map_x]
                 if num == 0:
-                    char = '#'
-                else:
+                    char = '^'
+                elif num == 1:
                     char = ' '
+                elif (map_y, map_x) in gs.location_index:
+                    char = chr(num)
+                    donot_update_set.add((y,x))
+                    
+                    info = gs.location_index[map_y, map_x]
+                    logger.info(f"{y, x} {info}")
+                    if info["type"] == "item":
+                        curses_win.attron(curses.color_pair(3))
+                        curses_win.addch(y, x, char)
+                        curses_win.attroff(curses.color_pair(3))
+                    elif info["type"] == "npc":
+                        logger.info("foo")
+                        color_pair = curses.color_pair(4)
+                        curses_win.attron(curses.color_pair(4))
+                        try:
+                            donot_update_set.add((y+1, x))
+                            curses_win.addch(y+1, x, 'λ')
+                            curses_win.addch(y, x, char)
+                        except:
+                            pass
+                        finally:
+                            curses_win.attroff(color_pair)
+                    continue
+                else:
+                    char = chr(num)
                 curses_win.addch(y, x, char)
 
+    
     # Draw the player at their relative position
     player_screen_y = prow - view_row
     player_screen_x = pcol - view_col
@@ -126,6 +160,13 @@ def find_start_coordinate(grid: np.ndarray):
             break
     
     return row_index, col_index
+
+def random_valid_point(grid):  
+    while True:
+        y, x = random.randint(32, 96), random.randint(50, 200)
+        if grid[y][x] == 1:
+            return y, x
+    
 
 def generate_map():
     width = 256  # Width of the grid

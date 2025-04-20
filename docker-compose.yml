@@ -19,6 +19,8 @@ services:
     command: python3 app.py
     stdin_open: true
     working_dir: /app/src
+    env_file:
+      - .env
     volumes:
       - ./src:/app/src
     tty: true

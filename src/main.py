@@ -8,6 +8,7 @@ import time
 import logging
 import sys
 import world
+import dungeonmaster
 #from prompt_handler import open_text_prompt
 
 
@@ -113,6 +114,8 @@ def is_valid_move(pos, world_base_map):
     )
 
 def write_to_right_sidebar(right_sidebar, text: list[str]):
+    gs = dungeonmaster.GlobalGameState()
+
     right_sidebar.clear()
     max_y, max_x = right_sidebar.getmaxyx()  # Get dimensions of the sidebar window
     logger.info(f"sizeof right side bar: {max_y}, {max_x}")
@@ -120,26 +123,32 @@ def write_to_right_sidebar(right_sidebar, text: list[str]):
 
     line_height = max_y - 2  # Account for the box frame
     
+    i = 0
+
     # Add lines one by one with a delay
-    for i, line in enumerate(text):
+    while not gs.state_initialized():
         if i >= line_height:
             right_sidebar.scroll(1)  # Scroll up one line
         time.sleep(0.10)
-        right_sidebar.addstr(i % line_height, 0, line[:max_x - 4])  # Wrap text inside the sidebar width
+        right_sidebar.addstr(i % line_height, 0, "loading message")  # Wrap text inside the sidebar width
         right_sidebar.refresh()
+        i += 1
+
 
     right_sidebar.refresh()
 
 world_base_map, start_pos = world.generate_map()
+gs = dungeonmaster.GlobalGameState(start_pos, world_base_map)
 
 
 def main(stdscr):
     logger.debug("-- MAIN START -- ")
-
     curses.curs_set(0)
     curses.start_color()
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
+    curses.init_pair(4, curses.COLOR_RED, curses.COLOR_BLACK)
 
     stdscr.bkgd(' ', curses.color_pair(1))
     stdscr.clear()
@@ -163,13 +172,13 @@ def main(stdscr):
     left_sidebar.refresh()
     right_sidebar.refresh()
 
-    player_pos = list(start_pos)
     
     at_spot = False
 
     # world_base_map is not here, but it is an 2d numpy array. if 
 
     while True:
+        player_pos = gs.player_pos
         key = stdscr.getch()
         if key == ord('q'):
             break
@@ -181,42 +190,43 @@ def main(stdscr):
             random_data = ''.join([str(random.randint(0, 9)) for _ in range(32)])
             text = ["Cracking RSA"] + [ f"n = {a} q = {b}" for a, b in factor(n)]
             write_to_right_sidebar(text_area, text)
-            world.render_world(text_area, world_base_map, player_pos)
-        
-        
+            logger.debug(f"{gs.location_index}")
+            world.render_world(text_area, world_base_map)
 
+        
         # Check if player reaches a specific position
         if key == ord("p"):  # Example position
-            open_text_prompt(stdscr, "You have discovered a hidden area!", right_width)
-
-            right_sidebar.refresh()
-            world.render_world(text_area, world_base_map, player_pos)
+            item = gs.get_item_near_me(*player_pos)
+            if item is not None:
+                open_text_prompt(stdscr, "item", right_width)
+                right_sidebar.refresh()
+                world.render_world(text_area, world_base_map)
             
         elif player_pos != [5, 5] and at_spot:  # Example position
             at_spot = False
         elif key == ord("w"):
             new_pos = [player_pos[0] - 1, player_pos[1]]
             if is_valid_move(new_pos, world_base_map):
-                player_pos = new_pos
-                world.render_world(text_area, world_base_map, player_pos)
+                gs.player_pos = new_pos
+                world.render_world(text_area, world_base_map)
 
         elif key == ord("s"):
             new_pos = [player_pos[0] + 1, player_pos[1]]
             if is_valid_move(new_pos, world_base_map):
-                player_pos = new_pos
-                world.render_world(text_area, world_base_map, player_pos)
+                gs.player_pos = new_pos
+                world.render_world(text_area, world_base_map)
 
         elif key == ord("a"):
             new_pos = [player_pos[0], player_pos[1] - 1]
             if is_valid_move(new_pos, world_base_map):
-                player_pos = new_pos
-                world.render_world(text_area, world_base_map, player_pos)
+                gs.player_pos = new_pos
+                world.render_world(text_area, world_base_map)
 
         elif key == ord("d"):
             new_pos = [player_pos[0], player_pos[1] + 1]
             if is_valid_move(new_pos, world_base_map):
-                player_pos = new_pos
-                world.render_world(text_area, world_base_map, player_pos)
+                gs.player_pos = new_pos
+                world.render_world(text_area, world_base_map)
 
 
 
