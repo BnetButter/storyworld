@@ -92,7 +92,7 @@ def draw_modal(stdscr, message):
     h, w = stdscr.getmaxyx()
     modal_height, modal_width = 7, 40
     modal_y = (h - modal_height) // 2
-    modal_x = (w - modal_width) // 2
+    modal_x = (w - modal_width)  // 2
 
     modal = curses.newwin(modal_height, modal_width, modal_y, modal_x)
     modal.bkgd(' ', curses.color_pair(2))

@@ -56,6 +56,13 @@
         Author 1, Author 2 &copy; 2025
     </div>
 
+    <div id="journal-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 1000; overflow: auto;">
+        <div id="journal-content" style="margin: 5% auto; padding: 20px; background: white; width: 80%; height: 80%; overflow: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);">
+            <button id="close-modal" style="float: right; background: red; color: white; border: none; padding: 10px; cursor: pointer;">Close</button>
+            <div id="journal-body"></div>
+        </div>
+    </div>
+
     <script>
         const socket = io.connect("/");
         const term = new Terminal({
@@ -80,23 +87,23 @@
 
         function scanAndOpenLink(data) {
             try {
-                // Define a mapping of keywords to links in the journalDrafts/ directory
+                // Define a mapping of keywords to journal page scripts
                 const keywordToLink = {
-                    "page: 0": "/journalDrafts/entry00.html"
-                    //"Opening Journal page: 1": "../journalDrafts/entry02.html",
-                    //"Opening Journal page: 2": "../journalDrafts/entry03.html",
-                    //"Opening Journal page: 3": "../journalDrafts/entry04.html",
-                    //"Opening Journal page: 4": "../journalDrafts/entry05.html",
-                    //"Opening Journal page: 5": "../journalDrafts/entry06.html"
+                    "page: 0": "/journalDrafts/entry00.js",
+                    "page: 1": "/journalDrafts/entry02.js",
+                    "page: 2": "/journalDrafts/entry03.js",
+                    "page: 3": "/journalDrafts/entry04.js",
+                    "page: 4": "/journalDrafts/entry05.js",
+                    "page: 5": "/journalDrafts/entry06.js"
                 };
+
                 console.log(`Entering scanAndOpenLink with data: ${data}`);
 
                 // Check if any keyword exists in the data
                 for (const [keyword, link] of Object.entries(keywordToLink)) {
-                    console.log(`matching: ${keyword}. Opening link: ${link}`);
                     if (data.includes(keyword)) {
-                        console.log(`Keyword matched: ${keyword}. Opening link: ${link}`);
-                        window.open(link, "_blank"); // Open the link in a new tab
+                        console.log(`Keyword matched: ${keyword}. Loading content from: ${link}`);
+                        loadJournalPage(link);
                         break; // Stop scanning after the first match
                     }
                 }
@@ -104,6 +111,39 @@
                 console.error("Error in scanAndOpenLink:", error);
             }
         }
+
+        function loadJournalPage(scriptUrl) {
+            // Show the modal
+            const modal = document.getElementById("journal-modal");
+            const journalBody = document.getElementById("journal-body");
+            modal.style.display = "block";
+
+            // Clear any existing content
+            journalBody.innerHTML = "";
+
+            // Dynamically load the journal page script
+            const script = document.createElement("script");
+            script.src = scriptUrl;
+            script.onload = function () {
+                console.log(`Loaded script: ${scriptUrl}`);
+            };
+            script.onerror = function () {
+                journalBody.innerHTML = "<p>Error loading journal page content.</p>";
+            };
+
+            // Append the script to the <body> instead of #journal-body
+            document.body.appendChild(script);
+        }
+
+        // Close the modal when the close button is clicked
+        document.getElementById("close-modal").addEventListener("click", function () {
+            const modal = document.getElementById("journal-modal");
+            modal.style.display = "none";
+
+            // Refocus on the terminal
+            const terminalContainer = document.getElementById("terminal");
+            terminalContainer.focus();
+        });
     </script>
 </body>
 </html>

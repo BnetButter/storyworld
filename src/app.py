@@ -74,12 +74,8 @@ def handle_terminal_input(data):
 @app.route('/')
 def index():
     return render_template('index.html')
-"""
-# Serve files from the journalEntries directory
-@app.route('/journalDrafts/<path:filename>')
-def serve_journal_entries(filename):
-    return send_from_directory('journalDrafts', filename)"""
 
+# Serve files from the journalDrafts directory
 @app.route('/journalDrafts/<path:filename>')
 def serve_journal_entries(filename):
     return send_from_directory('journalDrafts', filename)
