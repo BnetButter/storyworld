@@ -145,7 +145,8 @@ class GlobalGameState:
             if self.pickedup_items:
                 content = "User has these items. Use this to inform the assistant prompts"    
                 for i, p in enumerate(self.pickedup_items):
-                    content += f"{i+1}. " + p["item_description"] + " "
+                    key = "item_description" if p["type"] == "item" else "description"
+                    content += f"{i+1}. " + p[key] + " "
                 new_chat_history.append({ "role": "system", "content": content })
              
             try:
