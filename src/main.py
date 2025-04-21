@@ -53,6 +53,10 @@ def open_item_prompt(stdscr, item, right_sidebar_width):
     prompt_win.bkgd(' ', curses.color_pair(2))
     prompt_win.box()
 
+    prompt_win.addstr(5, 5, "LOADING...")
+    prompt_win.refresh()
+    
+
     # Display the message
 
     name = item["item_name"]
@@ -210,7 +214,7 @@ def write_to_right_sidebar(right_sidebar, text: list[str]):
             right_sidebar.scroll(1)  # Scroll up one line
         time.sleep(1)
 
-        right_sidebar.addstr(i % line_height, 0, f"Generating Unique Scenario: Waiting for {60-i}s")  # Wrap text inside the sidebar width
+        right_sidebar.addstr(i % line_height, 0, f"ChatGPT is Generating A World. Please Wait {60-i}s")  # Wrap text inside the sidebar width
         right_sidebar.refresh()
         i += 1
 
