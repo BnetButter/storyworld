@@ -210,7 +210,7 @@ def write_to_right_sidebar(right_sidebar, text: list[str]):
             right_sidebar.scroll(1)  # Scroll up one line
         time.sleep(1)
 
-        right_sidebar.addstr(i % line_height, 0, f"Generating Unique Scenario: Waiting for {20-i}s")  # Wrap text inside the sidebar width
+        right_sidebar.addstr(i % line_height, 0, f"Generating Unique Scenario: Waiting for {60-i}s")  # Wrap text inside the sidebar width
         right_sidebar.refresh()
         i += 1
 
