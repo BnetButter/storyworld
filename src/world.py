@@ -72,6 +72,11 @@ def render_world(curses_win: curses.window, game_map: List[List[str]]) -> None:
                         curses_win.attron(curses.color_pair(3))
                         curses_win.addch(y, x, char)
                         curses_win.attroff(curses.color_pair(3))
+                    elif info["type"] == "journal":
+                        curses_win.attron(curses.color_pair(5))
+                        curses_win.addch(y, x, 'J')
+                        curses_win.attroff(curses.color_pair(3))
+                        pass
                     elif info["type"] == "npc":
                         logger.info("foo")
                         color_pair = curses.color_pair(4)

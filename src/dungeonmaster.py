@@ -80,6 +80,8 @@ class GlobalGameState:
 
         self.location_index = {}
 
+        self.pickedup_items = []
+
         def init():
             import world
 
@@ -99,10 +101,28 @@ class GlobalGameState:
                 self.world[y][x] = ord(symbol)
                 logger.debug(f"item: {name} {y}, {x}")
                 self.location_index[y,x] = { "type": "npc"} | item
+            
+            for journal in JOURNALS:
+                symbol = journal["ascii_symbol"]
+                name = journal["name"]
+                y, x = world.random_valid_point(self.world)
+                self.world[y][x] = ord(symbol)
+                self.location_index[y,x] = { "type": "journal" } | journal
+    
 
             self.init_state = game_state
         threading.Thread(target=init).start()
     
+    def add_item(self, item):
+        if item not in self.pickedup_items:
+            self.pickedup_items.append(item)
+    
+    def has_journal(self, num):
+        for f in self.pickedup_items:
+            if f["type"] == "journal" and f["id"] == num:
+                return True
+        return False
+
     def converse_with_npc(self, npc: NPC) -> Callable:
         if "chat_history" not in npc:
             chat_history = npc["chat_history"] = [
@@ -118,9 +138,16 @@ class GlobalGameState:
                 logger.debug(line["content"])
 
             if len(chat_history) >= 5:
-                new_chat_history = chat_history[1:]
+                new_chat_history = list(chat_history[1:])
             else:
-                new_chat_history = chat_history
+                new_chat_history = list(chat_history)
+            
+            if self.pickedup_items:
+                content = "User has these items. Use this to inform the assistant prompts"    
+                for i, p in enumerate(self.pickedup_items):
+                    content += f"{i+1}. " + p["item_description"] + " "
+                new_chat_history.append({ "role": "system", "content": content })
+             
             try:
                 stream = client.chat.completions.create(
                     model="gpt-3.5-turbo",
@@ -245,6 +272,45 @@ Try not to use original characters from All System Red
 Define a definitive end state - not something like "Uncover the truth behind the manslaughter incident and the role of the Rogue AI in it." - Say something like "This organization was responsible for this crime because of this reason". Be creative about it
 ONLY give the initial JSON, since this will be fed into json.loads()
 """
+
+JOURNALS = [
+    {
+        "id": 1,
+        "name": "Journal 1",
+        "description": "placeholder",
+        "ascii_symbol": "J"
+    },
+    {
+        "id": 2,
+        "name": "Journal 2",
+        "description": "placeholder",
+        "ascii_symbol": "J"
+    },
+    {
+        "id": 3,
+        "name": "Journal 3",
+        "description": "placeholder",
+        "ascii_symbol": "J"
+    },
+    {
+        "id": 4,
+        "name": "Journal 4",
+        "description": "placeholder",
+        "ascii_symbol": "J"
+    },
+    {
+        "id": 5,
+        "name": "Journal 5",
+        "description": "placeholder",
+        "ascii_symbol": "J"
+    },
+    {
+        "id": 6,
+        "name": "Journal 6",
+        "description": "placeholder",
+        "ascii_symbol": "J"
+    }
+]
 
 TEST_RESPONSE = {
     "npc": [

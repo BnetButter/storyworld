@@ -256,6 +256,25 @@ world_base_map, start_pos = world.generate_map()
 gs = dungeonmaster.GlobalGameState(start_pos, world_base_map)
 
 
+def draw_inventory(win):
+    win.box()
+    win.addstr(2, 2, "[ Hack Governor Module ] (ENTER)", curses.color_pair(1))
+    win.addstr(3, 2, "[ Interact with Item   ] ( p )")
+    win.addstr(4, 2, "[ Navigate             ] (wasd)")
+    win.addstr(5, 2, "------------------------")
+
+    for i, item in enumerate(gs.pickedup_items):
+        key = "item_name" if item["type"] == "item" else "name"
+        
+        button = ""
+        if item["type"] == "journal":
+            button = f"({item['id']})"
+
+        name = item[key] + button
+        win.addstr(6+i, 2, name)
+        
+    win.refresh()
+    
 def main(stdscr):
     logger.debug("-- MAIN START -- ")
     curses.curs_set(0)
@@ -264,6 +283,7 @@ def main(stdscr):
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
     curses.init_pair(4, curses.COLOR_RED, curses.COLOR_BLACK)
+    curses.init_pair(5, curses.COLOR_YELLOW, curses.COLOR_BLACK)
 
     stdscr.bkgd(' ', curses.color_pair(1))
     
@@ -289,7 +309,7 @@ def main(stdscr):
 
     left_sidebar.box()
     right_sidebar.box()
-    left_sidebar.addstr(2, 2, "[ Hack Governor Module ] (ENTER)", curses.color_pair(1))
+    draw_inventory(left_sidebar)
     left_sidebar.refresh()
     right_sidebar.refresh()
 
@@ -328,8 +348,14 @@ def main(stdscr):
         if key == ord("p"):  # Example position
             item = gs.get_item_near_me(*player_pos)
             if item is not None:
+                
                 if item["type"] == "item":
+                    gs.add_item(item)
+                    draw_inventory(left_sidebar)
                     open_item_prompt(stdscr, item, right_width)
+                elif item["type"] == "journal":
+                    gs.add_item(item)
+                    draw_inventory(left_sidebar)
                 elif item["type"] == "npc":
                     open_text_prompt(right_sidebar, item, right_width)
                 world.render_world(text_area, world_base_map)
@@ -363,37 +389,37 @@ def main(stdscr):
 
         # Trigger an in-game event to update the scrolling text
         page_trigger = False
-        if key == ord('1'):  # Example event trigger
+        if key == ord('1') and gs.has_journal(1):  # Example event trigger
             journal_num = 0
             page_trigger = True
-            #current_text = 
+            #current_text =
             update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
         page_trigger = False
-        if key == ord('2'):  # Example event trigger
+        if key == ord('2') and gs.has_journal(2):  # Example event trigger
             journal_num = 1
             page_trigger = True
             #current_text = 
             update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
         page_trigger = False
-        if key == ord('3'):  # Example event trigger
+        if key == ord('3') and gs.has_journal(3):  # Example event trigger
             journal_num = 2
             page_trigger = True
             #current_text = 
             update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
         page_trigger = False
-        if key == ord('4'):  # Example event trigger
+        if key == ord('4') and gs.has_journal(4):  # Example event trigger
             journal_num = 3
             page_trigger = True
             #current_text = 
             update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
         page_trigger = False
-        if key == ord('5'):  # Example event trigger
+        if key == ord('5') and gs.has_journal(5):  # Example event trigger
             journal_num = 4
             page_trigger = True
             #current_text = 
             update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
         page_trigger = False
-        if key == ord('6'):  # Example event trigger
+        if key == ord('6') and gs.has_journal(6):  # Example event trigger
             journal_num = 5
             page_trigger = True
             #current_text = 
