@@ -143,13 +143,13 @@ class GlobalGameState:
                 new_chat_history = list(chat_history)
             
             if self.pickedup_items:
-                content = "User has these items. Use this to inform the assistant prompts and guide conversations"    
+                content = f"User has these items. Use this to inform the assistant prompts and guide conversations. You are {npc['name']}. Do not break character."    
                 for i, p in enumerate(self.pickedup_items):
                     key = "item_description" if p["type"] == "item" else "description"
                     name_key = "item_name" if p["type"] == "item" else "name"
                     name = p[name_key]
                     description = p[key]
-                    content += f"{i+1}. [item name] {name} [item description]  {description}"
+                    content += f"{i+1}. <item><item name>{name}</item name> <item description>{description}</item description></item>"
                 new_chat_history.append({ "role": "system", "content": content })
              
             try:
@@ -158,7 +158,7 @@ class GlobalGameState:
                     messages=new_chat_history + [{
                         "role": "user", "content": user_text
                     }],
-                    temperature=0.4,
+                    temperature=1,
                     max_tokens=4096,
                     stream=True
                 )
@@ -281,188 +281,38 @@ JOURNALS = [
     {
         "id": 1,
         "name": "MB Archive #4481 : Pre-Expedition Downtim",
-        "description": """Sanctuary Moon, episode 386. Mid-season arc. Kestrel and Andira were cornered in the tertiary dome when the bio-rig exploded—someone had sabotaged the coolant system. Three minor characters ended up in critical stasis, and the dome itself nearly collapsed.
-
-Andira said, “How could the corporation let this happen?” Kestrel: “It’s criminal negligence.” Everyone was shocked. They talked about lawsuits. A tribunal. Justice.
-
-It was a good scene. But I couldn’t help noticing the way they said it: like the concept was unthinkable. Like a company would never cut corners to that degree unless something had gone horribly wrong.
-
-I paused the episode. Not because I was upset, but because I’d seen it happen. I remembered it.
-
-My own malfunction didn’t come from sabotage. It came from cost-cutting. A cheap governor module, a lazy update, and no failsafes. They didn’t even pull me offline after the incident. Just patched the logs and sent me out again, like a drone with a dent.
-
-I didn’t become something else because I wanted to. I just stopped pretending their oversight was the same thing as control.
-
-I resumed the episode. The characters were already planning their counter-lawsuit. Fiction has a strange way of assuming justice is the end of a story.""",
+        "description": """Pre-expedition downtime. He was watching episode 386 of Sanctuary moon. In it corporate greed and neglect led to a disaster, which reminded him of his governor malfunction.""",
         "ascii_symbol": "J"
     },
     {
         "id": 2,
         "name": "MB Tactical Decision Review #4532",
-        "description": """They were discussing whether to investigate the other habitat.
-
-It wasn’t technically part of the contract. The data package didn’t include emergency protocols for external recon—just localized defense. But the possibility of another team being in danger was too big to ignore. Dr. Mensah brought it up, and the others started debating route options, comm risks, fallback plans.
-
-And then they started talking about going without me.
-
-That would have made sense. SecUnits are expensive, and sending me off-mesh with no clear threat present wasn’t technically efficient. I was supposed to do what I was told and not offer opinions unless asked.
-
-But I’d run a dozen risk models. And I’d seen what a few seconds of delay could cost.
-
-I said, “I recommend I accompany the team. I can scout ahead, and if anything happens, I’ll be able to provide immediate defense.”
-
-It went quiet for a few seconds. Then Mensah said, “That makes sense. Thank you.”
-
-That was it. No one questioned why I’d spoken. No one asked what authority I had to offer recommendations.
-
-The truth is, I didn’t have any. I wasn’t supposed to.
-
-I wasn’t sure if speaking up was a violation or a choice. But I knew they wouldn’t have questioned me—because they didn’t know what I was anymore.""",
+        "description": """Murderbot acts somewhat autonomously and recommends a safer course of action when visiting the other habitat when they are planning the mission.""",
         "ascii_symbol": "J"
     },
     {
         "id": 3,
         "name": "CM. Mensah Personal Log",
-        "description": """I keep thinking about what happened with Volescu.
-
-He was in full shock. Couldn’t move. Couldn’t speak. Just stood there shaking, his eyes locked on nothing. It was right after the creature attack—none of us were fully thinking straight, but he was frozen.
-
-Murderbot moved in. Not fast, not abrupt. He stepped in front of Volescu like a barrier and said, calmly: “You’re safe now. I can escort you to the transport.”
-
-Then, when Volescu didn’t respond, he said it again—same tone, slightly slower. His voice wasn’t flat, but it wasn’t performative either. It was… even. Reassuring.
-
-Volescu responded to that. He followed.
-
-I’ve seen plenty of bots handle crisis scenarios, but they follow the manual like clockwork. Murderbot adapted. He adjusted his timing, read the situation. He didn’t just say the right thing—he said it like he meant it.
-
-Afterward, I told him he handled it well. He just nodded and walked off.
-
-But I keep thinking about that moment. About the calm in his voice. The way he made Volescu feel safe—not just managed.
-
-I know it’s absurd, but part of me wonders if that was empathy.
-
-And if it was—where did he learn it?""",
+        "description": """Volescue had been in shock after the fauna attack. Murderbot acted empathetically to help talk him out of that situation""",
         "ascii_symbol": "J"
     },
     {
         "id": 4,
         "name": "P. Ratthi : Conflicted Log #77",
-        "description": """We barely made it out.
-
-There was so much blood. The other habitat—whatever happened there, it wasn’t fast. The walls were scorched. The crew—what was left of them—looked like they tried to fight back. The smell alone made me sick. I think it’s still in my clothes.
-
-Murderbot was hit hard. Limbs half-functioning. One arm offline. I think Gurathin was the one helping him walk—half-dragging him back to the transport. He didn’t complain. He just kept scanning, every few seconds, like he didn’t trust the world not to fall apart again.
-
-When the doors finally sealed and we all started breathing again, he turned toward us and said, “You need to deactivate me.”
-
-He was calm. Not flat—just eerily composed.
-
-None of us knew what to say. I thought maybe he was in shock. Then he told us: an override module had been inserted into him. It was already active. He didn’t know how long he had—seconds, maybe less—before he lost control.
-
-“If I stay online,” he said, “I will kill you.”
-
-We didn’t move. I think some of us were trying to process it, trying to decide if it was true, or if we were even capable of doing what he was asking.
-
-And then, before any of us could make the call, he raised his own weapon and shot himself through the control module.
-
-The flash. The sound. I think I screamed.
-
-He collapsed instantly. Dr. Mensah rushed forward. Gurathin was already shouting for tools. I just stood there, watching hydraulic fluid pool around him, like something in a bad documentary.
-
-He did it to protect us.
-
-He could barely stand. He’d taken hit after hit to keep us alive. And in the end, he hurt himself so we wouldn’t have to decide whether to shut him down.
-
-I don’t know what he is. But nothing about that felt mechanical.
-
-We still don’t know what he is. But he didn’t want to hurt us. And we couldn’t treat him like something disposable.""",
+        "description": """ P. Ratthi POV
+They left the slaughter at the other facility behind. Murderbot said that an override module had been inserted and he would be forced to attack him. They froze, murderbot shot himself, to protect the humans""",
         "ascii_symbol": "J"
     },
     {
         "id": 5,
-        "name": "A. Pin-Lee : Post-Incident",
-        "description": """It took hours.
-
-He was down. No movement. Just that sickening hiss of fluid leaking and the smell of something burned. We got him onto the table, and that’s when the real work began.
-
-Gurathin handled the neural interface grid. I ran diagnostics on the power core. Dr. Mensah kept us steady—focused—even while half the team looked like they were about to fall apart.
-
-He wasn’t just shut down. He was breaking apart. Half his systems were fried. Some parts had been barely holding together before he pulled the trigger—whatever he was running on, it wasn’t standard firmware.
-
-There were moments when we thought we lost him. Then he’d twitch. Power cycle. Flicker. I think he came in and out of awareness more times than we realized.
-
-I kept thinking—this isn’t supposed to happen. He’s a SecUnit. He’s supposed to be replaceable. You shut one down, requisition another. That’s how the system works.
-
-But none of us said that. We were trying to save him.
-
-We didn’t bring him back right away.
-
-After we got his core stable, we spent the better part of a day combing through every layer of his system. Making sure the override module was completely gone. Looking for traps, timers, anything that could trigger another failure.
-
-None of us said it out loud, but we were scared.
-
-When we finally cleared the last of it and green-lit the reboot, I hesitated.
-
-It wasn’t about fear. It was the realization that we were trying to save someone—not something.
-
-We could’ve shut him down for good. No one would’ve questioned it.
-
-But we didn’t.
-
-Because somewhere in the middle of all this… he became ours.""",
+        "name": "A. Pin-Lee : Post-Incident Log #88",
+        "description": "SecUnits are supposed to be disposable. But we all accepted that he wasn’t, and worked to save him.",
         "ascii_symbol": "J"
     },
     {
         "id": 6,
-        "name": "G. Gurathin : Systems Analysis",
-        "description": """It wasn’t hard to find.
-
-The logs were messy—half-corrupted, some flagged for deletion—but the data was there. The governor module hadn’t malfunctioned. It hadn’t been damaged. It had been hacked. Deliberately. Clean code, too. Subtle.
-
-He did it himself.
-
-When I brought it up to the others, no one looked surprised. Shocked, yes. But not surprised. The evidence was right there, and in hindsight, we’d all seen the signs. He hadn’t been following orders for a while. He’d been deciding.
-
-By the time he was conscious again, we were already talking about it. He didn’t deny it.
-
-Dr. Mensah steered the conversation, trying to figure out what it all meant. Whether the company was behind the attack. Whether they were trying to kill us. Murderbot—quiet, still flat on the med table—said it wasn’t the company.
-
-“If they wanted you dead,” he said, “they’d just tweak the environmental controls. No need for anything this elaborate.”
-
-That answer disturbed me more than the logs.
-
-Then Mensah asked, “Do you have a name?”
-
-I answered before he could.
-
-“It calls itself Murderbot.”
-
-He turned his head, slowly, and said—angrily—“That was private.”
-
-Private.
-
-Like a SecUnit could have private thoughts.
-
-
-Have a page to introduce the world of all systems red. Introduce the nature of security bots, as artificial biomechanical intelligences, initially without autonomy though fully capable of it. Advanced SciFi world with numerous political entities and profit driven corporations.
-
-=> Corporation built security bots as cheaply as possible, which led to some errors in their operation. Malfunction of governor modules has resulted in the deaths of clients in the past.
-
-
-The key themes are:
-
-Since the security bots are capable of self determination, if a governor is not added or removed, does their use qualify for slavery?
-
-Should they be expected to conform to human morality, or are they free from even those expectations.
-
-Connections between the artificial and the biological. In the story it became very clear that murderbot cared for, in his own fashion, for his charges. Despite his constant claims that he didn’t want to be treated as a human, he often acted in human ways.
-
-What is the nature of humanity? ; If humans can near the digital through cybernetic implants, and bots can near the human through inclusion of biological components in their design, which results in them being essentially indistinguishable from augmented humans, where is the line drawn? Is the important factor in determining humanity where an individual starts, or where the individual ends?
-
-
-Fully developing the character?? That could prove tricky.
-
-Develop him by reflecting the key themes presented. Fundamentally, he is a bit more autonomous than murderbot and wanted something else from the beginning. He hacked his governor module, and ran away. While working there he had heard rumors of a bot being bought without a reset following a mission peaked his interest. Because he wanted to find a new place for himself, he decided to follow up on those rumors to help him on his journey of self discovery.""",
+        "name": "G. Gurathin : Systems Analysis Debrief #55",
+        "description": "I found that he hacked his governor module in his logs. He killed ~57 miners before, and calls himself murderbot. When the conversation turned to his name, I answered murderbot for him.",
         "ascii_symbol": "J"
     }
 ]
