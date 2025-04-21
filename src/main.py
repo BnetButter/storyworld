@@ -11,6 +11,7 @@ import world
 import textwrap
 import dungeonmaster
 import string
+from promptwin import PromptWin
 #from prompt_handler import open_text_prompt
 
 
@@ -79,68 +80,85 @@ def open_item_prompt(stdscr, item, right_sidebar_width):
             return
         
 
+
+import textwrap
+
+def _render_conversation(win, log, streaming_text, width):
+    win.erase()
+    win.box()
+    win.addstr(2, 2, "Conversation", curses.color_pair(2))
+    win.addstr(win.getmaxyx()[0] - 2, 2, "Press TAB to return...", curses.color_pair(2))
+
+    y = 4
+    wrap_width = width - 4
+    max_y = win.getmaxyx()[0] - 3
+
+    # Draw past conversation
+    for speaker, message in log:
+        prefix = f"{speaker}: "
+        wrapped_lines = textwrap.wrap(message, wrap_width - len(prefix))
+        if not wrapped_lines:
+            continue
+
+        # First line with speaker label
+        if y < max_y:
+            win.addstr(y, 2, f"{prefix}{wrapped_lines[0]}", curses.color_pair(2))
+            y += 1
+
+        # Remaining lines indented
+        for line in wrapped_lines[1:]:
+            if y < max_y:
+                win.addstr(y, 2 + len(prefix), line, curses.color_pair(2))
+                y += 1
+
+        # Add a blank line after each message
+        if y < max_y:
+            y += 1
+
+    # Draw in-progress reply if it's streaming
+    if streaming_text:
+        wrapped_lines = textwrap.wrap(streaming_text, wrap_width)
+        if y < max_y:
+            win.addstr(y, 2, "NPC (typing):", curses.color_pair(2))
+            y += 1
+        for line in wrapped_lines:
+            if y < max_y:
+                win.addstr(y, 4, line, curses.color_pair(2))
+                y += 1
+
+    logger.debug(streaming_text)
+    win.refresh()
+
  
     
 def open_text_prompt(stdscr, item, right_sidebar_width):
     """
-    Opens a text prompt in the center of the screen with a message.
-    The prompt window will be approximately the size of the right subwindow.
-    Allows the user to input text and exits when the user types 'exit'.
+    Converse with NPC
     """
     h, w = stdscr.getmaxyx()
-    prompt_height = h - 10  # Slightly smaller than the full height
-    prompt_width = right_sidebar_width - 8  # Reduce width slightly to center the box
-    prompt_y = 4  # Start a bit below the top
-    prompt_x = w - right_sidebar_width + 4  # Adjust alignment to center the box better
+    prompt_height = h - 10
+    prompt_width = right_sidebar_width - 8
+    prompt_y = 4
+    prompt_x = w - right_sidebar_width + 4
 
-    # Create a new window for the prompt
-    prompt_win = curses.newwin(prompt_height, prompt_width, prompt_y, prompt_x)
-    prompt_win.bkgd(' ', curses.color_pair(2))
-    prompt_win.box()
+    promptwin = PromptWin(stdscr)
 
-    # Display the message
-    prompt_win.addstr(2, 2, item['item_name'], curses.color_pair(2))
+    promptwin.set_title(item["name"])
 
-    text = gs.get_item_description(item)
-    logger.debug(text)
-    prompt_win.addstr(2, 2, text, curses.color_pair(2))
+    conversation = gs.converse_with_npc(item)
+    response = conversation("")
 
-    prompt_win.addstr(4, 2, "Type 'q' to return...", curses.color_pair(2))
-
-    # Refresh the prompt window
-    prompt_win.refresh()
-
-    # Initialize input string
-    user_input = ""
     while True:
-        # Display the current input
-        prompt_win.addstr(6, 2, f"Input: {user_input}", curses.color_pair(2))
-        prompt_win.clrtoeol()  # Clear the rest of the line
-        prompt_win.refresh()
-
-        # Get user input
-        key = prompt_win.getch()
-
-        # Handle backspace
-        if key in (curses.KEY_BACKSPACE, 127):
-            user_input = user_input[:-1]
-        # Handle Enter key
-        elif key in (curses.KEY_ENTER, 10, 13):
-            if user_input.lower() == "exit":
-                break
-            else:
-                user_input = ""  # Clear input if not "exit"
-        # Handle regular characters
-        elif 32 <= key <= 126:  # Printable ASCII range
-            user_input += chr(key)
-
-    # Clear the prompt window
-    prompt_win.clear()
-    prompt_win.refresh()
-
-    # Redraw the main screen to resume map navigation
-    stdscr.refresh()
-
+        promptwin.append_wrapped("", newline=True)
+        for p in response:
+            promptwin.append_wrapped(p)
+        value = promptwin.capture_input()
+        if value == "":
+            break
+        promptwin.append_wrapped(value, newline=True)
+        response = conversation(value)
+        
+        
 
 def draw_modal(stdscr, message):
     h, w = stdscr.getmaxyx()
@@ -190,8 +208,9 @@ def write_to_right_sidebar(right_sidebar, text: list[str]):
     while not gs.state_initialized():
         if i >= line_height:
             right_sidebar.scroll(1)  # Scroll up one line
-        time.sleep(0.10)
-        right_sidebar.addstr(i % line_height, 0, "Generating Unique Scenario - Hopefully it won't timeout error out because ChatGPT is finicky")  # Wrap text inside the sidebar width
+        time.sleep(1)
+
+        right_sidebar.addstr(i % line_height, 0, f"Generating Unique Scenario: Waiting for {20-i}s")  # Wrap text inside the sidebar width
         right_sidebar.refresh()
         i += 1
 
@@ -247,7 +266,7 @@ def main(stdscr):
     curses.init_pair(4, curses.COLOR_RED, curses.COLOR_BLACK)
 
     stdscr.bkgd(' ', curses.color_pair(1))
-    stdscr.clear()
+    
     stdscr.refresh()
 
     h, w = stdscr.getmaxyx()
@@ -312,7 +331,7 @@ def main(stdscr):
                 if item["type"] == "item":
                     open_item_prompt(stdscr, item, right_width)
                 elif item["type"] == "npc":
-                    open_text_prompt(stdscr, item, right_width)
+                    open_text_prompt(right_sidebar, item, right_width)
                 world.render_world(text_area, world_base_map)
                 right_sidebar.refresh()
             

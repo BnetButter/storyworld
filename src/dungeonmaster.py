@@ -102,6 +102,50 @@ class GlobalGameState:
 
             self.init_state = game_state
         threading.Thread(target=init).start()
+    
+    def converse_with_npc(self, npc: NPC) -> Callable:
+        if "chat_history" not in npc:
+            chat_history = npc["chat_history"] = [
+                {"role": "system", "content": SYSTEM_PROMPT + f"{self.init_state}"},
+                {"role": "system", "content": f"You are {npc['name']}. Respond in text, not JSON. Keep to 150 word responses or less"},
+                {"role": "user", "content": f"Introduce yourself"}
+            ]
+        else:
+            chat_history = npc["chat_history"]
+        
+        def prompt(user_text) -> Generator:
+            for line in chat_history:
+                logger.debug(line["content"])
+
+            if len(chat_history) >= 5:
+                new_chat_history = chat_history[1:]
+            else:
+                new_chat_history = chat_history
+            try:
+                stream = client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    messages=new_chat_history + [{
+                        "role": "user", "content": user_text
+                    }],
+                    temperature=0.7,
+                    max_tokens=4096,
+                    stream=True
+                )
+
+                full_reply = ""
+                for chunk in stream:
+                    if chunk.choices[0].delta.content:
+                        partial = chunk.choices[0].delta.content
+                        full_reply += partial
+                        yield partial  # stream to caller
+                chat_history.append({"role": "user", "content": user_text})
+                chat_history.append({"role": "assistant", "content": full_reply})
+            
+            except Exception as e:
+                yield "[Error occurred]"
+        
+        return prompt
+
 
     def get_item_description(self, item):
         if "detailed_description" in item:
