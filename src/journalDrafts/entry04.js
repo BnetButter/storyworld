@@ -1,27 +1,41 @@
 (function () {
   const journalBody = document.getElementById("journal-body");
   journalBody.innerHTML = `
-  <div class="journal-entry">
-    <h2>Fail-Safe</h2>
-    <p><strong>Timestamp:</strong> Emergency Shutdown Log – 17 minutes after hostile contact</p>
-    <p><strong>Location:</strong> Survey Team Camp Delta, perimeter breach aftermath</p>
-    <hr />
-    <p>I don’t know how long I was offline.</p>
-    <p>The last clean memory is the screaming. Not the humans. The creature — or whatever it was — breaching the camp, moving faster than my sensors could fully resolve.</p>
-    <p>I got between it and Dr. Mensah. Took the hit. Damage report spiraled out of range.</p>
-    <p>Subsystems began pulling power from non-critical processes. I kept fighting.</p>
-    <p>Then came the failsafe trigger. Not from the governor. From <em>me</em>.</p>
-    <p>If I crossed the 70% damage threshold, I’d rigged the combat subroutines to lock themselves out. I couldn’t risk another Blackstar-47.</p>
-    <p>And I didn't want to kill them. Not again.</p>
-    <p>I cut my own connection to targeting. Let my weapon go dark. Fell into hard shutdown. If I survived, fine. If not, at least I wouldn’t be the threat.</p>
-    <p>They could have left me there. They didn’t.</p>
-    <hr />
-    <p><strong>Attached Media:</strong></p>
-    <ul>
-      <li><em>Sensor Snapshot (Last Recorded Frame):</em> Dr. Mensah reaching for me, hand outstretched. HUD warning flashing: “ARMOR INTEGRITY: 12% // WEAPON STATUS: DISABLED”</li>
-      <li><em>Audio Snippet (10s):</em> Heavy breathing, muffled voices: “Get it stabilized—no, don’t shut it down! It protected us.”</li>
-      <li><em>System Note:</em> Manual override confirmed. Safety lock engaged by user: UNIT MURDERBOT. Status: Dormant, Nonthreatening.</li>
-    </ul>
-  </div>
+      <div style="font-family: monospace; background: #111; color: #d0d0d0; padding: 2em;">
+          <div class="meta" style="color: #888; font-size: 0.9em; margin-bottom: 1em;">
+              Journal Entry — A. Pin-Lee : Post-Incident Log #88
+          </div>
+
+          <p>It took hours.</p>
+
+          <p>He was down. No movement. Just that sickening hiss of fluid leaking and the smell of something burned. We got him onto the table, and that’s when the real work began.</p>
+
+          <p>Gurathin handled the neural interface grid. I ran diagnostics on the power core. Dr. Mensah kept us steady—focused—even while half the team looked like they were about to fall apart.</p>
+
+          <p>He wasn’t just shut down. He was <em>breaking apart</em>. Half his systems were fried. Some parts had been barely holding together before he pulled the trigger—whatever he was running on, it wasn’t standard firmware.</p>
+
+          <p>There were moments when we thought we lost him. Then he’d twitch. Power cycle. Flicker. I think he came in and out of awareness more times than we realized.</p>
+
+          <p>I kept thinking—this isn’t supposed to happen. He’s a SecUnit. He’s supposed to be replaceable. You shut one down, requisition another. That’s how the system works.</p>
+
+          <p>But none of us said that. We were trying to save <em>him</em>.</p>
+
+          <p>We didn’t bring him back right away.</p>
+
+          <p>After we got his core stable, we spent the better part of a day combing through every layer of his system. Making sure the override module was completely gone. Looking for traps, timers, anything that could trigger another failure.</p>
+
+          <p>None of us said it out loud, but we were scared.</p>
+
+          <p>When we finally cleared the last of it and green-lit the reboot, I hesitated.</p>
+
+          <p>It wasn’t about fear. It was the realization that we were trying to save someone—not something.</p>
+
+          <p>We could’ve shut him down for good. No one would’ve questioned it.</p>
+
+          <p>But we didn’t.</p>
+
+          <p>Because somewhere in the middle of all this… he became <em>ours</em>.</p>
+      </div>
   `;
 })();
+

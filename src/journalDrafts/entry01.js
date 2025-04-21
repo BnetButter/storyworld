@@ -1,24 +1,30 @@
 (function () {
   const journalBody = document.getElementById("journal-body");
   journalBody.innerHTML = `
-  <div class="journal-entry">
-    <h2>Voluntary Deployment</h2>
-    <p><strong>Timestamp:</strong> Internal Log, 12 hours before Survey Site Incident</p>
-    <p><strong>Location:</strong> Habitat perimeter – Observation node, obscured</p>
-    <hr />
-    <p>The humans were talking about leaving camp early. Two of them thought Survey Site Theta had "structural anomalies." One thought it was "probably nothing." None of them requested security accompaniment.</p>
-    <p>They didn’t know I’d hacked my governor module. That I didn’t technically have to listen to anything they said. They didn’t ask if I wanted to come. I didn’t wait for a directive.</p>
-    <p>I rerouted my self-check subroutine. Preloaded additional medical gel packs. Checked the crawler manifest. Then I stood outside the crawler bay and waited until they noticed me.</p>
-    <p>Someone said, “Do we need the SecUnit?”</p>
-    <p>I didn’t say anything. I was already on board.</p>
-    <p>The whole trip I stayed silent. Didn’t run any unnecessary diagnostics. Just kept one feed on them, one on the terrain, and one on <em>Sanctuary Moon</em> reruns. (Episode 399: the trial.)</p>
-    <p>They didn’t know why I was really there. I didn’t either. Not exactly. But I had a bad feeling. And they didn’t know how many ways things could go wrong out there.</p>
-    <hr />
-    <p><strong>Attached Media:</strong></p>
-    <ul>
-      <li><em>Video Clip (9s):</em> Grainy helmet cam — Murderbot silently steps onto the crawler, humans glance up mid-conversation. One says, “Guess we have backup.”</li>
-      <li><em>Diagnostic Snapshot:</em> “Unauthorized pre-departure readiness check – Flagged: Autonomous Action”</li>
-    </ul>
-  </div>
+      <div style="font-family: monospace; background: #111; color: #d0d0d0; padding: 2em;">
+          <div class="meta" style="color: #888; font-size: 0.9em; margin-bottom: 1em;">
+              Log Entry — MB Tactical Decision Review #4532 : Outpost Recon
+          </div>
+
+          <p>They were discussing whether to investigate the other habitat.</p>
+
+          <p>It wasn’t technically part of the contract. The data package didn’t include emergency protocols for external recon—just localized defense. But the possibility of another team being in danger was too big to ignore. Dr. Mensah brought it up, and the others started debating route options, comm risks, fallback plans.</p>
+
+          <p>And then they started talking about going without me.</p>
+
+          <p>That would have made sense. SecUnits are expensive, and sending me off-mesh with no clear threat present wasn’t technically efficient. I was supposed to do what I was told and not offer opinions unless asked.</p>
+
+          <p>But I’d run a dozen risk models. And I’d seen what a few seconds of delay could cost.</p>
+
+          <p>I said, “I recommend I accompany the team. I can scout ahead, and if anything happens, I’ll be able to provide immediate defense.”</p>
+
+          <p>It went quiet for a few seconds. Then Mensah said, “That makes sense. Thank you.”</p>
+
+          <p>That was it. No one questioned why I’d spoken. No one asked what authority I had to offer tactical advice.</p>
+
+          <p>The truth is, I didn’t have any. I wasn’t supposed to.</p>
+
+          <p>I wasn’t sure if speaking up was a violation or a choice. But I knew they wouldn’t have questioned me—because they didn’t know what I was anymore.</p>
+      </div>
   `;
 })();

@@ -1,31 +1,38 @@
 (function () {
   const journalBody = document.getElementById("journal-body");
-  if (!journalBody) {
-      console.error("Error: #journal-body element not found.");
-      return;
-  }
   journalBody.innerHTML = `
-      <div class="journal-entry">
-          <h2>Repairs</h2>
-          <p><strong>Timestamp:</strong> Recovery Log – 3 hours post-conflict</p>
-          <p><strong>Location:</strong> Temporary Med Shelter, Forward Field Site</p>
-          <hr />
-          <p>System uptime restored. Motor functions at 43%. Vision feed glitching. Diagnostics say I should be unconscious. I’m not.</p>
-          <p>Someone patched my chest casing. It’s not regulation work—more like field triage. A heatseal across a torn synthflesh panel. Sloppy. Functional.</p>
-          <p>Not a repair drone. Not a tech unit. <strong>Human hands.</strong></p>
-          <p>I accessed the shelter’s cameras. Dr. Volescu is asleep in a chair beside the table. Dr. Bharadwaj is arguing quietly with Mensah about biogel ratios. They used medical supplies. On <em>me</em>.</p>
-          <p>They weren’t supposed to. I’m not on their insurance plan.</p>
-          <p>I should be in a supply crate awaiting pickup. Or dumped. Or reimaged.</p>
-          <p>But here I am. Patched. Stabilized. Watched over. Like I matter.</p>
-          <p>I told myself I didn’t care. That it didn’t mean anything.</p>
-          <p>It still doesn’t. Probably.</p>
-          <hr />
-          <p><strong>Attached Media:</strong></p>
-          <ul>
-              <li><em>Image Capture:</em> Low-light still from ceiling cam: Dr. Mensah leaning over Murderbot’s frame, applying biofoam. Her hand rests briefly on its arm.</li>
-              <li><em>Audio Clip (8s):</em> Quiet murmurs: “He’s not just a unit, Thiago. He saved us. He deserves better.”</li>
-              <li><em>Status Overlay:</em> [Human contact registered // no defensive response initiated // internal log: <span style="color: orange;">conflicted</span>]</li>
-          </ul>
+      <div style="font-family: monospace; background: #111; color: #d0d0d0; padding: 2em;">
+          <div class="meta" style="color: #888; font-size: 0.9em; margin-bottom: 1em;">
+              Journal Entry — G. Gurathin : Systems Analysis Debrief #55
+          </div>
+
+          <p>It wasn’t hard to find.</p>
+
+          <p>The logs were messy—half-corrupted, some flagged for deletion—but the data was there. The governor module hadn’t malfunctioned. It hadn’t been damaged. It had been hacked. Deliberately. Clean code, too. Subtle.</p>
+
+          <p>He did it himself.</p>
+
+          <p>When I brought it up to the others, no one looked surprised. Shocked, yes. But not surprised. The evidence was right there, and in hindsight, we’d all seen the signs. He hadn’t been following orders for a while. He’d been <em>deciding</em>.</p>
+
+          <p>By the time he was conscious again, we were already talking about it. He didn’t deny it.</p>
+
+          <p>Dr. Mensah steered the conversation, trying to figure out what it all meant. Whether the company was behind the attack. Whether they were trying to kill us. Murderbot—quiet, still flat on the med table—said it wasn’t the company.</p>
+
+          <p>“If they wanted you dead,” he said, “they’d just tweak the environmental controls. No need for anything this elaborate.”</p>
+
+          <p>That answer disturbed me more than the logs.</p>
+
+          <p>Then Mensah asked, “Do you have a name?”</p>
+
+          <p>I answered before he could.</p>
+
+          <p>“It calls itself Murderbot.”</p>
+
+          <p>He turned his head, slowly, and said—angrily—“That was private.”</p>
+
+          <p>Private.</p>
+
+          <p>Like a SecUnit could have private thoughts.</p>
       </div>
   `;
 })();
