@@ -143,10 +143,13 @@ class GlobalGameState:
                 new_chat_history = list(chat_history)
             
             if self.pickedup_items:
-                content = "User has these items. Use this to inform the assistant prompts"    
+                content = f"User has these items. Use this to inform the assistant prompts and guide conversations. You are {npc['name']}. Do not break character."    
                 for i, p in enumerate(self.pickedup_items):
                     key = "item_description" if p["type"] == "item" else "description"
-                    content += f"{i+1}. " + p[key] + " "
+                    name_key = "item_name" if p["type"] == "item" else "name"
+                    name = p[name_key]
+                    description = p[key]
+                    content += f"{i+1}. <item><item name>{name}</item name> <item description>{description}</item description></item>"
                 new_chat_history.append({ "role": "system", "content": content })
              
             try:
@@ -155,7 +158,7 @@ class GlobalGameState:
                     messages=new_chat_history + [{
                         "role": "user", "content": user_text
                     }],
-                    temperature=0.7,
+                    temperature=1,
                     max_tokens=4096,
                     stream=True
                 )
@@ -277,38 +280,39 @@ ONLY give the initial JSON, since this will be fed into json.loads()
 JOURNALS = [
     {
         "id": 1,
-        "name": "Journal 1",
-        "description": "placeholder",
+        "name": "MB Archive #4481 : Pre-Expedition Downtim",
+        "description": """Pre-expedition downtime. He was watching episode 386 of Sanctuary moon. In it corporate greed and neglect led to a disaster, which reminded him of his governor malfunction.""",
         "ascii_symbol": "J"
     },
     {
         "id": 2,
-        "name": "Journal 2",
-        "description": "placeholder",
+        "name": "MB Tactical Decision Review #4532",
+        "description": """Murderbot acts somewhat autonomously and recommends a safer course of action when visiting the other habitat when they are planning the mission.""",
         "ascii_symbol": "J"
     },
     {
         "id": 3,
-        "name": "Journal 3",
-        "description": "placeholder",
+        "name": "CM. Mensah Personal Log",
+        "description": """Volescue had been in shock after the fauna attack. Murderbot acted empathetically to help talk him out of that situation""",
         "ascii_symbol": "J"
     },
     {
         "id": 4,
-        "name": "Journal 4",
-        "description": "placeholder",
+        "name": "P. Ratthi : Conflicted Log #77",
+        "description": """ P. Ratthi POV
+They left the slaughter at the other facility behind. Murderbot said that an override module had been inserted and he would be forced to attack him. They froze, murderbot shot himself, to protect the humans""",
         "ascii_symbol": "J"
     },
     {
         "id": 5,
-        "name": "Journal 5",
-        "description": "placeholder",
+        "name": "A. Pin-Lee : Post-Incident Log #88",
+        "description": "SecUnits are supposed to be disposable. But we all accepted that he wasn’t, and worked to save him.",
         "ascii_symbol": "J"
     },
     {
         "id": 6,
-        "name": "Journal 6",
-        "description": "placeholder",
+        "name": "G. Gurathin : Systems Analysis Debrief #55",
+        "description": "I found that he hacked his governor module in his logs. He killed ~57 miners before, and calls himself murderbot. When the conversation turned to his name, I answered murderbot for him.",
         "ascii_symbol": "J"
     }
 ]

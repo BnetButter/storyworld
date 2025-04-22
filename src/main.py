@@ -69,7 +69,7 @@ def open_item_prompt(stdscr, item, right_sidebar_width):
     wrapped_lines = textwrap.wrap(text, width=80)
 
     # Add the name
-    prompt_win.addstr(2, 2, name, curses.color_pair(2))
+    prompt_win.addstr(2, 2, name + " -- Press TAB to quit", curses.color_pair(2))
 
     # Add wrapped lines starting from line 4
     for i, line in enumerate(wrapped_lines[:prompt_height - 4]):
@@ -80,7 +80,7 @@ def open_item_prompt(stdscr, item, right_sidebar_width):
 
     while True:
         n = stdscr.getch()
-        if n == ord("q"):
+        if n == ord('\t'):
             return
         
 
@@ -330,10 +330,8 @@ def main(stdscr):
         random_text = [generate_random_ascii(36) for _ in range(4)]
         current_text = random_text
         key = stdscr.getch()
-        if key == ord('q'):
-            break
         
-        elif key == ord('\n') or key == 10:
+        if key == ord('\n') or key == 10:
             logging.debug(f"Pressed Enter")
             # Simulate random number printout to right sidebar
             random_data = ''.join([str(random.randint(0, 9)) for _ in range(32)])
