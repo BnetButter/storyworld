@@ -8,9 +8,9 @@
   
             <!-- Sanctuary Moon Still -->
             <div style="margin-bottom: 1em; text-align: center;">
-                <img src="images/Sanctuary-moon.png" alt="Sanctuary Moon Still" style="max-width: 100%; border: 1px solid #333; border-radius: 8px;">
+                <img src="/journalDrafts/images/Sanctuary-moon.png" alt="Sanctuary Moon Still" style="max-width: 100%; border: 1px solid #333; border-radius: 8px;">
             </div>
-            
+
             <p><strong>Sanctuary Moon</strong>, episode 386. Mid-season arc. Kestrel and Andira were cornered in the tertiary dome when the bio-rig exploded—someone had sabotaged the coolant system. Three minor characters ended up in critical stasis, and the dome itself nearly collapsed.</p>
   
             <p>Andira said, “How could the corporation let this happen?”<br/>

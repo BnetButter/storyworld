@@ -8,7 +8,7 @@
 
           <!-- Unknown journey -->
             <div style="margin-bottom: 1em; text-align: center;">
-                <img src="images/EndOfStory.png" alt="Cargoship starscape" style="max-width: 100%; border: 1px solid #333; border-radius: 8px;">
+                <img src="/journalDrafts/images/EndOfStory.png" alt="Cargoship starscape" style="max-width: 100%; border: 1px solid #333; border-radius: 8px;">
           </div>
 
           <p>I didn’t say goodbye.</p>

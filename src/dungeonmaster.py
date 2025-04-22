@@ -280,7 +280,7 @@ ONLY give the initial JSON, since this will be fed into json.loads()
 JOURNALS = [
     {
         "id": 1,
-        "name": "MB Archive #4481 : Pre-Expedition Downtim",
+        "name": "MB Arc #4481 : Pre-Expedition R&R",
         "description": """Pre-expedition downtime. He was watching episode 386 of Sanctuary moon. In it corporate greed and neglect led to a disaster, which reminded him of his governor malfunction.""",
         "ascii_symbol": "J"
     },
@@ -311,8 +311,32 @@ They left the slaughter at the other facility behind. Murderbot said that an ove
     },
     {
         "id": 6,
-        "name": "G. Gurathin : Systems Analysis Debrief #55",
-        "description": "I found that he hacked his governor module in his logs. He killed ~57 miners before, and calls himself murderbot. When the conversation turned to his name, I answered murderbot for him.",
+        "name": "G. Gurathin : Systems Debrief #55",
+        "description": """I found that he hacked his governor module in his logs. He killed ~57 miners before, and calls himself murderbot. When the conversation turned to his name, I answered murderbot for him. He gave me the sink eye, and said it was private. As if SecUnits can have privat thoughts.""",
+        "ascii_symbol": "J"
+    },
+    {
+        "id": 7,
+        "name": "CM. Mensah : Confidential Addendum",
+        "description": """Murderot left, and she found out. Decided to let him go, rather than report him running away, because of how often he saved them.""",
+        "ascii_symbol": "J"
+    },
+    {
+        "id": 8,
+        "name": "MB Unsec File #0001",
+        "description": """He left without saying goodbye. Doesn’t have a plan, and wants to learn what his independence actually means.""",
+        "ascii_symbol": "J"
+    },
+    {
+        "id": 9,
+        "name": "A. Hinton : Delta Report #13",
+        "description": """A corporate report indicating that hardware malfuctions, like what happened to murderbots governor module, aren’t unheard of and systemic.""",
+        "ascii_symbol": "J"
+    },
+    {
+        "id": 0,
+        "name": " P. Ratthi : Draft #01",
+        "description": """Thanking murderbot for saving them, and acknowledging that he was more human than they originally gave him credit for.""",
         "ascii_symbol": "J"
     }
 ]

@@ -426,6 +426,30 @@ def main(stdscr):
             page_trigger = True
             #current_text = 
             update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
+        page_trigger = False
+        if key == ord('7') and gs.has_journal(7):  # Example event trigger
+            journal_num = 6
+            page_trigger = True
+            #current_text = 
+            update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
+        page_trigger = False
+        if key == ord('8') and gs.has_journal(8):  # Example event trigger
+            journal_num = 7
+            page_trigger = True
+            #current_text = 
+            update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
+        page_trigger = False
+        if key == ord('9') and gs.has_journal(9):  # Example event trigger
+            journal_num = 8
+            page_trigger = True
+            #current_text = 
+            update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
+        page_trigger = False
+        if key == ord('0') and gs.has_journal(0):  # Example event trigger
+            journal_num = 9
+            page_trigger = True
+            #current_text = 
+            update_scrolling_text(scrolling_win, [f"Opening Journal page: {journal_num}"])
 
         # Restore random scrolling text after event
         elif key == ord('r'):  # Example reset trigger

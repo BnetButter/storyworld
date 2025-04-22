@@ -8,7 +8,7 @@
 
           <!-- Sanctuary Moon Still -->
             <div style="margin-bottom: 1em; text-align: center;">
-                <img src="images/GovernorOverrideRemovedError.png" alt="Override Error" style="max-width: 100%; border: 1px solid #333; border-radius: 8px;">
+                <img src="/journalDrafts/images/GovernorOverrideRemovedError.png" alt="Override Error" style="max-width: 100%; border: 1px solid #333; border-radius: 8px;">
             </div>
 
           <p>It wasn’t hard to find.</p>
