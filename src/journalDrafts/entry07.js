@@ -6,11 +6,6 @@
               Log Entry — MB Unsecured File #0001 : Independent Transit
           </div>
 
-          <!-- Unknown journey -->
-            <div style="margin-bottom: 1em; text-align: center;">
-                <img src="/journalDrafts/images/EndOfStory.png" alt="Cargoship starscape" style="max-width: 100%; border: 1px solid #333; border-radius: 8px;">
-          </div>
-
           <p>I didn’t say goodbye.</p>
 
           <p>I left a note. Addressed it to “my favorite human.” That felt accurate enough. I didn’t explain everything. Just enough.</p>
@@ -29,6 +24,12 @@
 
           <p>I’m a SecUnit with no mission, no orders, and no idea what I’m doing.<br/>
           So far, I’m doing fine.</p>
+
+          <!-- Unknown journey -->
+            <div style="margin-bottom: 1em; text-align: center;">
+                <img src="/journalDrafts/images/EndOfStory.png" alt="Cargoship starscape" style="max-width: 100%; border: 1px solid #333; border-radius: 8px;">
+          </div>
+
       </div>
   `;
 })();

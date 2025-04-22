@@ -5,11 +5,6 @@
             <div class="meta" style="color: #888; font-size: 0.9em; margin-bottom: 1em;">
                 Log Entry — MB Archive #4481 : Pre-Expedition Downtime
             </div>
-  
-            <!-- Sanctuary Moon Still -->
-            <div style="margin-bottom: 1em; text-align: center;">
-                <img src="/journalDrafts/images/Sanctuary-moon.png" alt="Sanctuary Moon Still" style="max-width: 100%; border: 1px solid #333; border-radius: 8px;">
-            </div>
 
             <p><strong>Sanctuary Moon</strong>, episode 386. Mid-season arc. Kestrel and Andira were cornered in the tertiary dome when the bio-rig exploded—someone had sabotaged the coolant system. Three minor characters ended up in critical stasis, and the dome itself nearly collapsed.</p>
   
@@ -26,6 +21,12 @@
             <p>I didn’t become something else because I wanted to. I just stopped pretending their oversight was the same thing as control.</p>
   
             <p>I resumed the episode. The characters were already planning their counter-lawsuit. Fiction has a strange way of assuming justice is the end of a story.</p>
+  
+            <!-- Sanctuary Moon Still -->
+            <div style="margin-bottom: 1em; text-align: center;">
+                <img src="/journalDrafts/images/Sanctuary-moon.png" alt="Sanctuary Moon Still" style="max-width: 100%; border: 1px solid #333; border-radius: 8px;">
+            </div>
+
         </div>
     `;
   })();

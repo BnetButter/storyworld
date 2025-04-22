@@ -6,11 +6,6 @@
               Journal Entry — G. Gurathin : Systems Analysis Debrief #55
           </div>
 
-          <!-- Sanctuary Moon Still -->
-            <div style="margin-bottom: 1em; text-align: center;">
-                <img src="/journalDrafts/images/GovernorOverrideRemovedError.png" alt="Override Error" style="max-width: 100%; border: 1px solid #333; border-radius: 8px;">
-            </div>
-
           <p>It wasn’t hard to find.</p>
 
           <p>The logs were messy—half-corrupted, some flagged for deletion—but the data was there. The governor module hadn’t malfunctioned. It hadn’t been damaged. It had been hacked. Deliberately. Clean code, too. Subtle.</p>
@@ -38,6 +33,11 @@
           <p>Private.</p>
 
           <p>Like a SecUnit could have private thoughts.</p>
+
+          <!-- Sanctuary Moon Still -->
+            <div style="margin-bottom: 1em; text-align: center;">
+                <img src="/journalDrafts/images/GovernorOverrideRemovedError.png" alt="Override Error" style="max-width: 100%; border: 1px solid #333; border-radius: 8px;">
+            </div>
       </div>
   `;
 })();
